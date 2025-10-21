@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Cashere.Pages.LoginPage"
+             Title="LoginPage"
+             BackgroundColor="#2C3E50">
+
+    <Grid VerticalOptions="Center" HorizontalOptions="Center" Padding="30">
+        <Frame CornerRadius="10" BackgroundColor="White" Padding="30" 
+               HasShadow="True" WidthRequest="400">
+            <StackLayout Spacing="20">
+                <!-- Logo/Title -->
+                <Label Text="☕ CafePOS" FontSize="32" FontAttributes="Bold" 
+                       TextColor="#2C3E50" HorizontalTextAlignment="Center"/>
+                <Label Text="Cashier Login" FontSize="16" TextColor="#7F8C8D" 
+                       HorizontalTextAlignment="Center"/>
+
+                <!-- Username -->
+                <StackLayout Spacing="5">
+                    <Label Text="Username" FontSize="12" TextColor="#2C3E50"/>
+                    <Entry Text="{Binding Username}" Placeholder="Enter username" 
+                           FontSize="14"/>
+                </StackLayout>
+
+                <!-- Password -->
+                <StackLayout Spacing="5">
+                    <Label Text="Password" FontSize="12" TextColor="#2C3E50"/>
+                    <Entry Text="{Binding Password}" Placeholder="Enter password" 
+                           IsPassword="True" FontSize="14"/>
+                </StackLayout>
+
+                <!-- Login Button -->
+                <Button Text="Login" BackgroundColor="#3498DB" TextColor="White" 
+                        FontAttributes="Bold" CornerRadius="5" Padding="10"
+                        Command="{Binding LoginCommand}"/>
+
+                <!-- Loading Indicator -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                                 IsVisible="{Binding IsLoading}" 
+                                 Color="#3498DB"/>
+            </StackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

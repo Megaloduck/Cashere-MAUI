@@ -1,0 +1,433 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net.Http.Json;
+using System.Text.Json; 
+using Cashere.Models;
+
+namespace Cashere.Services
+{
+    public class ApiService
+    {
+        private readonly HttpClient _httpClient;
+        private readonly string _baseUrl = "https://localhost:7102/api";
+        private string _authToken;
+
+        public ApiService()
+        {
+            var handler = new HttpClientHandler();
+            // For development - ignore SSL certificate validation
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+            _httpClient = new HttpClient(handler);
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
+        }
+
+        // ============ AUTHENTICATION ============
+        public async Task<LoginResponse> LoginAsync(string username, string password)
+        {
+            try
+            {
+                var loginRequest = new LoginRequest
+                {
+                    Username = username,
+                    Password = password
+                };
+
+                var response = await _httpClient.PostAsJsonAsync(
+                    $"{_baseUrl}/auth/login",
+                    loginRequest);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var loginResponse = await response.Content.ReadAsAsync<LoginResponse>();
+                    _authToken = loginResponse.Token;
+
+                    // Save token for future requests
+                    await SecureStorage.Default.SetAsync("auth_token", _authToken);
+                    await SecureStorage.Default.SetAsync("user_id", loginResponse.Id.ToString());
+                    await SecureStorage.Default.SetAsync("username", loginResponse.Username);
+                    await SecureStorage.Default.SetAsync("role", loginResponse.Role);
+
+                    return loginResponse;
+                }
+
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Login failed: {response.StatusCode} - {errorContent}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Login error: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> LogoutAsync()
+        {
+            try
+            {
+                SecureStorage.Default.Remove("auth_token");
+                SecureStorage.Default.Remove("user_id");
+                SecureStorage.Default.Remove("username");
+                SecureStorage.Default.Remove("role");
+                _authToken = null;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task LoadStoredTokenAsync()
+        {
+            try
+            {
+                _authToken = await SecureStorage.Default.GetAsync("auth_token");
+            }
+            catch
+            {
+                _authToken = null;
+            }
+        }
+
+        public async Task<bool> ValidateTokenAsync()
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+
+                if (string.IsNullOrEmpty(_authToken))
+                    return false;
+
+                SetAuthorizationHeader();
+                var response = await _httpClient.PostAsync($"{_baseUrl}/auth/validate", null);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // ============ MENU ============
+        public async Task<List<MenuCategoryResponse>> GetMenuCategoriesAsync()
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/menu/categories");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<List<MenuCategoryResponse>>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to load menu: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<MenuItemResponse>> GetMenuItemsByCategoryAsync(int categoryId)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync(
+                    $"{_baseUrl}/menu/category/{categoryId}/items");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<List<MenuItemResponse>>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to load items: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<MenuItemResponse> GetMenuItemAsync(int itemId)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/menu/item/{itemId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<MenuItemResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to load item: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<TaxSettingsResponse> GetTaxSettingsAsync()
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/menu/tax-settings");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<TaxSettingsResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to load tax settings: {ex.Message}", ex);
+            }
+        }
+
+        // ============ ORDERS ============
+        public async Task<OrderResponse> CreateOrderAsync(CreateOrderRequest orderRequest)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var json = JsonSerializer.Serialize(orderRequest);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync($"{_baseUrl}/order/create", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<OrderResponse>();
+                }
+
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error creating order: {response.StatusCode} - {error}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create order: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<OrderResponse> GetOrderAsync(int orderId)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/order/{orderId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<OrderResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get order: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<OrderResponse> UpdateOrderAsync(int orderId, CreateOrderRequest orderRequest)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var json = JsonSerializer.Serialize(orderRequest);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync($"{_baseUrl}/order/{orderId}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<OrderResponse>();
+                }
+
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error updating order: {error}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update order: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> CancelOrderAsync(int orderId)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.DeleteAsync($"{_baseUrl}/order/{orderId}");
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to cancel order: {ex.Message}", ex);
+            }
+        }
+
+        // ============ PAYMENTS ============
+        public async Task<PaymentResponse> ProcessPaymentAsync(ProcessPaymentRequest paymentRequest)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var json = JsonSerializer.Serialize(paymentRequest);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync($"{_baseUrl}/payment/process", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<PaymentResponse>();
+                }
+
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Payment failed: {error}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to process payment: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<PaymentResponse> GetPaymentAsync(int transactionId)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/payment/{transactionId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<PaymentResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get payment: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<TransactionDetailResponse>> GetDailyTransactionsAsync(DateTime date)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var dateString = date.ToString("yyyy-MM-dd");
+                var response = await _httpClient.GetAsync($"{_baseUrl}/payment/daily/{dateString}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<List<TransactionDetailResponse>>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get daily transactions: {ex.Message}", ex);
+            }
+        }
+
+        // ============ REPORTS ============
+        public async Task<DailySummaryResponse> GetDailySummaryAsync(DateTime date)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var dateString = date.ToString("yyyy-MM-dd");
+                var response = await _httpClient.GetAsync($"{_baseUrl}/report/daily/{dateString}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<DailySummaryResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get daily summary: {ex.Message}", ex);
+            }
+        }
+
+        // ============ HELPER METHODS ============
+        private void SetAuthorizationHeader()
+        {
+            if (!string.IsNullOrEmpty(_authToken))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authToken);
+            }
+        }
+
+        public bool IsAuthenticated()
+        {
+            return !string.IsNullOrEmpty(_authToken);
+        }
+
+        public async Task<string> GetStoredUsernameAsync()
+        {
+            return await SecureStorage.Default.GetAsync("username");
+        }
+
+        public async Task<string> GetStoredUserRoleAsync()
+        {
+            return await SecureStorage.Default.GetAsync("role");
+        }
+    }
+
+    // ============================================
+    // Extension methods for HttpContent
+    // ============================================
+    public static class HttpContentExtensions
+    {
+        public static async Task<T> ReadAsAsync<T>(this HttpContent content)
+        {
+            var json = await content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
+    }
+}
