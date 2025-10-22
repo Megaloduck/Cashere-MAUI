@@ -74,6 +74,7 @@ namespace Cashere.PageModels
         public ICommand DecreaseQuantityCommand { get; }
         public ICommand ClearCartCommand { get; }
         public ICommand CheckoutCommand { get; }
+        public ICommand OpenAdminPanelCommand { get; }
 
         public CashierPageModel()
         {
@@ -89,6 +90,12 @@ namespace Cashere.PageModels
             DecreaseQuantityCommand = new Command<CartItemModel>(OnDecreaseQuantity);
             ClearCartCommand = new Command(OnClearCart);
             CheckoutCommand = new Command(OnCheckout);
+            OpenAdminPanelCommand = new Command(OnOpenAdminPanel);
+        }
+
+        private async void OnOpenAdminPanel()
+        {
+            await Shell.Current.GoToAsync("admin");
         }
 
         public async Task InitializeAsync()
@@ -109,6 +116,7 @@ namespace Cashere.PageModels
                         Description = category.Description,
                         DisplayOrder = category.DisplayOrder,
                         Items = new ObservableCollection<MenuItemModel>(
+
                             category.Items.Select(i => new MenuItemModel
                             {
                                 Id = i.Id,

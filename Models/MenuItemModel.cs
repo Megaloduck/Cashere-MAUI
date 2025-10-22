@@ -15,6 +15,6 @@ namespace Cashere.Models
         public decimal Price { get; set; }
         public bool IsTaxable { get; set; }
         public int DisplayOrder { get; set; }
-        public string Category { get; set; }
+        public string? Category { get; set; }
     }
 }

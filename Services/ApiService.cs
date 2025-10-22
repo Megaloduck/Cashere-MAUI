@@ -414,6 +414,280 @@ namespace Cashere.Services
         {
             return await SecureStorage.Default.GetAsync("role");
         }
+
+        // ============ ADMIN - CATEGORIES ============
+        public async Task<MenuCategoryResponse> CreateCategoryAsync(string name, string description, int displayOrder)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new { Name = name, Description = description, DisplayOrder = displayOrder };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync($"{_baseUrl}/admin/MenuManagement/category", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<MenuCategoryResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create category: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<MenuCategoryResponse> UpdateCategoryAsync(int id, string name, string description, int displayOrder)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new { Name = name, Description = description, DisplayOrder = displayOrder, IsActive = true };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync($"{_baseUrl}/admin/MenuManagement/category/{id}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<MenuCategoryResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update category: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteCategoryAsync(int id)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.DeleteAsync($"{_baseUrl}/admin/MenuManagement/category/{id}");
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to delete category: {ex.Message}", ex);
+            }
+        }
+
+        // ============ ADMIN - MENU ITEMS ============
+        public async Task<bool> DeleteMenuItemAsync(int id)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.DeleteAsync($"{_baseUrl}/admin/MenuManagement/item/{id}");
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to delete menu item: {ex.Message}", ex);
+            }
+        }
+
+        // ============ ADMIN - TAX SETTINGS ============
+        public async Task<TaxSettingsResponse> UpdateTaxSettingsAsync(string taxName, decimal taxRate, bool isEnabled)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new { TaxName = taxName, DefaultTaxRate = taxRate, IsEnabled = isEnabled };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync($"{_baseUrl}/admin/MenuManagement/tax-settings", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<TaxSettingsResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update tax settings: {ex.Message}", ex);
+            }
+        }
+
+        // ============ ADMIN - USERS ============
+        public async Task<List<UserResponse>> GetAllUsersAsync()
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/admin/UserManagement/users");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<List<UserResponse>>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to load users: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<UserResponse> CreateUserAsync(string username, string email, string password, string role)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new { Username = username, Email = email, Password = password, Role = role };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync($"{_baseUrl}/admin/UserManagement/users", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<UserResponse>();
+                }
+
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error: {error}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create user: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<UserResponse> UpdateUserAsync(int id, string username, string email, string role, bool isActive)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new { Username = username, Email = email, Role = role, IsActive = isActive };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync($"{_baseUrl}/admin/UserManagement/users/{id}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<UserResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update user: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.DeleteAsync($"{_baseUrl}/admin/UserManagement/users/{id}");
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to delete user: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<bool> ResetUserPasswordAsync(int id, string newPassword)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new { NewPassword = newPassword };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync($"{_baseUrl}/admin/UserManagement/users/{id}/reset-password", content);
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to reset password: {ex.Message}", ex);
+            }
+        }
+
+        // ============ DASHBOARD ============
+        public async Task<DailySummaryResponse> GetTodaySummaryAsync()
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/Dashboard/summary/today");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<DailySummaryResponse>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get today's summary: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<List<TransactionDetailResponse>> GetRecentTransactionsAsync(int count)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync($"{_baseUrl}/Dashboard/transactions/recent?count={count}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<List<TransactionDetailResponse>>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get recent transactions: {ex.Message}", ex);
+            }
+        }
     }
 
     // ============================================
@@ -429,5 +703,63 @@ namespace Cashere.Services
                 PropertyNameCaseInsensitive = true
             });
         }
+    }
+
+    // ============================================
+    // Additional Response Models
+    // ============================================
+    public class ProcessPaymentRequest
+    {
+        public int OrderId { get; set; }
+        public string PaymentMethod { get; set; }
+        public decimal AmountPaid { get; set; }
+    }
+
+    public class PaymentResponse
+    {
+        public int TransactionId { get; set; }
+        public string OrderNumber { get; set; }
+        public string PaymentMethod { get; set; }
+        public decimal AmountPaid { get; set; }
+        public decimal ChangeAmount { get; set; }
+        public decimal OrderTotal { get; set; }
+        public decimal TaxAmount { get; set; }
+        public string Status { get; set; }
+        public string QRCodeData { get; set; }
+        public string ReferenceNumber { get; set; }
+        public DateTime TransactionDate { get; set; }
+    }
+
+    public class TransactionDetailResponse
+    {
+        public int Id { get; set; }
+        public string OrderNumber { get; set; }
+        public string PaymentMethod { get; set; }
+        public decimal AmountPaid { get; set; }
+        public decimal OrderTotal { get; set; }
+        public decimal TaxAmount { get; set; }
+        public string Status { get; set; }
+        public DateTime TransactionDate { get; set; }
+    }
+
+    public class DailySummaryResponse
+    {
+        public DateTime SummaryDate { get; set; }
+        public int TotalTransactions { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public decimal TotalTax { get; set; }
+        public decimal CashCollected { get; set; }
+        public decimal QRISCollected { get; set; }
+        public int TotalItemsSold { get; set; }
+    }
+
+    public class UserResponse
+    {
+        public int Id { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

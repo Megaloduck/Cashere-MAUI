@@ -15,6 +15,7 @@ namespace Cashere
             Routing.RegisterRoute("login", typeof(LoginPage));
             Routing.RegisterRoute("main", typeof(MainPage));
             Routing.RegisterRoute("checkout", typeof(CheckoutPage));
+            Routing.RegisterRoute("admin", typeof(AdminPanelPage));
         }
     }
 }

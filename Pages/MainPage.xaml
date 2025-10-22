@@ -14,11 +14,16 @@
     <Grid RowDefinitions="50,*" ColumnDefinitions="*,400">
 
         <!-- Header -->
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" RowDefinitions="200,*"
               BackgroundColor="#2C3E50" Padding="15,0">
             <Label Text="☕ Cashere" 
                    FontSize="24" FontAttributes="Bold" 
                    TextColor="White" VerticalOptions="Center"/>
+
+            <Button Grid.Column="1" Text="⚙️ Admin Panel" 
+                BackgroundColor="#E67E22" TextColor="White"
+                Command="{Binding OpenAdminPanelCommand}"/>
+
         </Grid>
 
         <!-- Menu Categories & Items (Left Side) -->
@@ -49,6 +54,7 @@
             <!-- Menu Items Grid -->
             <CollectionView Grid.Row="1" ItemsSource="{Binding FilteredMenuItems}" 
                           SelectionMode="Single" SelectionChanged="OnMenuItemSelected" Margin="0,5">
+                
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" HorizontalItemSpacing="5" 
                                     VerticalItemSpacing="5" Grid.Column="3"/>

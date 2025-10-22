@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.LoginPage"
-             Title="LoginPage"
+             Title="Login Page"
              BackgroundColor="#2C3E50">
 
     <Grid VerticalOptions="Center" HorizontalOptions="Center" Padding="30">
@@ -10,7 +10,7 @@
                HasShadow="True" WidthRequest="400" HeightRequest="400">
             <StackLayout Spacing="20">
                 <!-- Logo/Title -->
-                <Label Text="☕ CafePOS" FontSize="32" FontAttributes="Bold" 
+                <Label Text="☕ Cafe POS" FontSize="32" FontAttributes="Bold" 
                        TextColor="#2C3E50" HorizontalTextAlignment="Center"/>
                 <Label Text="Cashier Login" FontSize="16" TextColor="#7F8C8D" 
                        HorizontalTextAlignment="Center"/>
