@@ -27,7 +27,7 @@
             <!-- Category Tabs -->
             <CollectionView Grid.Row="0" ItemsSource="{Binding Categories}" 
                             SelectionMode="Single" 
-                            SelectionChangedCommand="{Binding SelectMenuItemCommand}"
+                            SelectionChangedCommand="{Binding SelectCategoryCommand}"
                             SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" ItemSpacing="5"/>
@@ -99,7 +99,8 @@
         Stroke="#CCCCCC"
         StrokeThickness="1"
         BackgroundColor="White"
-        Padding="15">
+        Padding="15"   >
+
 
             <Grid RowDefinitions="40,*,200">
 
@@ -113,75 +114,85 @@
                 <!-- Cart Items List -->
                 <CollectionView Grid.Row="1"
                         ItemsSource="{Binding CartItems}"
-                        Margin="0,10">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Stroke="#EEEEEE"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 5"
-                            Margin="0,5">
-                                <StackLayout Padding="10" Spacing="5">
+                        Margin="0,10" >
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                    </CollectionView.ItemsLayout>
+                    
+                    <CollectionView.ItemTemplate >                 
 
+                        <DataTemplate >
+                            <Border Stroke="#EEEEEE"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 5"
+                                    Margin="0,5">        
+                                <StackLayout Padding="10" Spacing="5">
+                                    
                                     <!-- Item Header Row -->
                                     <Grid ColumnDefinitions="*,50,40" ColumnSpacing="5">
 
                                         <!-- Item Name -->
                                         <StackLayout Grid.Column="0">
                                             <Label Text="{Binding ItemName}"
-                                           FontSize="13"
-                                           FontAttributes="Bold" />
-                                            <Label Text="{Binding UnitPrice, StringFormat='Rp {0:N0}'}"
-                                           FontSize="11"
-                                           TextColor="#666666" />
+                                                   FontSize="13"
+                                                   FontAttributes="Bold" />
+                                            <Label FontSize="11" TextColor="#666666">
+                                                <Label.Text>
+                                                    <MultiBinding StringFormat="{}{0} x{1}">
+                                                        <Binding Path="UnitPrice" StringFormat='Rp {0:N0}'/>
+                                                        <Binding Path="Quantity"/>
+                                                    </MultiBinding>
+                                                </Label.Text>
+                                            </Label>
                                         </StackLayout>
 
                                         <!-- Quantity Controls -->
                                         <StackLayout Grid.Column="1"
-                                             Orientation="Horizontal"
-                                             Spacing="5">
+                                                     Orientation="Horizontal"
+                                                     Spacing="5">
                                             <Button Text="-"
-                                            BackgroundColor="#E74C3C"
-                                            TextColor="White"
-                                            CornerRadius="3"
-                                            Padding="3"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
-                                                              Path=BindingContext.DecreaseQuantityCommand}"
-                                            CommandParameter="{Binding .}"
-                                            FontSize="12" />
+                                                    BackgroundColor="#E74C3C"
+                                                    TextColor="White"
+                                                    CornerRadius="3"
+                                                    Padding="3"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
+                                                Path=BindingContext.DecreaseQuantityCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    FontSize="12" />
                                             <Entry Text="{Binding Quantity}"
-                                           Keyboard="Numeric"
-                                           TextChanged="OnCartItemQuantityChanged"
-                                           HorizontalTextAlignment="Center"
-                                           FontSize="12" />
+                                                   Keyboard="Numeric"
+                                                   TextChanged="OnCartItemQuantityChanged"
+                                                   HorizontalTextAlignment="Center"
+                                                   FontSize="12" />
                                             <Button Text="+"
-                                            BackgroundColor="#27AE60"
-                                            TextColor="White"
-                                            CornerRadius="3"
-                                            Padding="3"
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
-                                                              Path=BindingContext.IncreaseQuantityCommand}"
-                                            CommandParameter="{Binding .}"
-                                            FontSize="12" />
+                                                    BackgroundColor="#27AE60"
+                                                    TextColor="White"
+                                                    CornerRadius="3"
+                                                    Padding="3"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
+                                                Path=BindingContext.IncreaseQuantityCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    FontSize="12" />
                                         </StackLayout>
 
                                         <!-- Remove Button -->
                                         <Button Grid.Column="2"
-                                        Text="🗑"
-                                        BackgroundColor="#C0392B"
-                                        TextColor="White"
-                                        CornerRadius="3"
-                                        Padding="3"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
-                                                          Path=BindingContext.RemoveFromCartCommand}"
-                                        CommandParameter="{Binding .}"
-                                        FontSize="14" />
+                                                Text="🗑"
+                                                BackgroundColor="#C0392B"
+                                                TextColor="White"
+                                                CornerRadius="3"
+                                                Padding="3"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
+                                            Path=BindingContext.RemoveFromCartCommand}"
+                                                CommandParameter="{Binding .}"
+                                                FontSize="14" />
                                     </Grid>
 
                                     <!-- Item Total -->
                                     <Label Text="{Binding TotalAmount, StringFormat='Total: Rp {0:N0}'}"
-                                   FontSize="12"
-                                   FontAttributes="Bold"
-                                   TextColor="#27AE60" />
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           TextColor="#27AE60" />
                                 </StackLayout>
                             </Border>
                         </DataTemplate>
@@ -190,75 +201,71 @@
 
                 <!-- Cart Summary & Checkout -->
                 <Border Grid.Row="2"
-                Stroke="#CCCCCC"
-                StrokeThickness="1"
-                StrokeShape="RoundRectangle 5"
-                Padding="10"
-                Margin="0,10,0,0">
+                        Stroke="#CCCCCC"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 5"
+                        Padding="10"
+                        Margin="0,10,0,0">
                     <StackLayout Spacing="10">
 
                         <!-- Subtotal -->
                         <Grid ColumnDefinitions="*,150" Padding="10,5">
                             <Label Grid.Column="0" Text="Subtotal:" FontSize="12" />
                             <Label Grid.Column="1"
-                           Text="{Binding CartSubtotal, StringFormat='Rp {0:N0}'}"
-                           FontSize="12"
-                           FontAttributes="Bold"
-                           HorizontalTextAlignment="End" />
+                                   Text="{Binding CartSubtotal, StringFormat='Rp {0:N0}'}"
+                                   FontSize="12"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="End" />
                         </Grid>
 
                         <!-- Tax -->
                         <Grid ColumnDefinitions="*,150" Padding="10,5">
                             <Label Grid.Column="0" Text="Tax (10%):" FontSize="12" />
                             <Label Grid.Column="1"
-                           Text="{Binding CartTax, StringFormat='Rp {0:N0}'}"
-                           FontSize="12"
-                           FontAttributes="Bold"
-                           TextColor="#E67E22"
-                           HorizontalTextAlignment="End" />
+                                   Text="{Binding CartTax, StringFormat='Rp {0:N0}'}"
+                                   FontSize="12"
+                                   FontAttributes="Bold"
+                                   TextColor="#E67E22"
+                                   HorizontalTextAlignment="End" />
                         </Grid>
 
                         <!-- Total -->
                         <Border Stroke="#E0E0E0"
-                        StrokeThickness="1"
-                        BackgroundColor="#F0F0F0"
-                        StrokeShape="RoundRectangle 5"
-                        Padding="10,5">
+                                StrokeThickness="1"
+                                BackgroundColor="#F0F0F0"
+                                StrokeShape="RoundRectangle 5"
+                                Padding="10,5">
                             <Grid ColumnDefinitions="*,150">
                                 <Label Grid.Column="0"
-                               Text="TOTAL:"
-                               FontSize="14"
-                               FontAttributes="Bold" />
+                                       Text="TOTAL:"
+                                       FontSize="14"
+                                       FontAttributes="Bold" />
                                 <Label Grid.Column="1"
-                               Text="{Binding CartTotal, StringFormat='Rp {0:N0}'}"
-                               FontSize="14"
-                               FontAttributes="Bold"
-                               TextColor="#27AE60"
-                               HorizontalTextAlignment="End" />
+                                       Text="{Binding CartTotal, StringFormat='Rp {0:N0}'}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="#27AE60"
+                                       HorizontalTextAlignment="End" />
                             </Grid>
                         </Border>
 
                         <!-- Buttons -->
                         <Button Text="Clear Cart"
-                        BackgroundColor="#95A5A6"
-                        TextColor="White"
-                        CornerRadius="5"
-                        Command="{Binding ClearCartCommand}" />
-
+                                BackgroundColor="#95A5A6"
+                                TextColor="White"
+                                CornerRadius="5"
+                                Command="{Binding ClearCartCommand}" />
                         <Button Text="🔒 Proceed to Payment"
-                        BackgroundColor="#27AE60"
-                        TextColor="White"
-                        CornerRadius="5"
-                        FontAttributes="Bold"
-                        FontSize="14"
-                        Padding="5,10"
-                        Command="{Binding CheckoutCommand}" />
+                                BackgroundColor="#27AE60"
+                                TextColor="White"
+                                CornerRadius="5"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                Padding="5,10"
+                                Command="{Binding CheckoutCommand}" />
                     </StackLayout>
                 </Border>
-
             </Grid>
         </Border>
-
     </Grid>
 </ContentPage>
-
