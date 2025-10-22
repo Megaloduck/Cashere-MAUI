@@ -7,7 +7,7 @@
 
     <Grid VerticalOptions="Center" HorizontalOptions="Center" Padding="30">
         <Frame CornerRadius="10" BackgroundColor="White" Padding="30" 
-               HasShadow="True" WidthRequest="400">
+               HasShadow="True" WidthRequest="400" HeightRequest="400">
             <StackLayout Spacing="20">
                 <!-- Logo/Title -->
                 <Label Text="☕ CafePOS" FontSize="32" FontAttributes="Bold" 
@@ -31,7 +31,7 @@
 
                 <!-- Login Button -->
                 <Button Text="Login" BackgroundColor="#3498DB" TextColor="White" 
-                        FontAttributes="Bold" CornerRadius="5" Padding="10"
+                        FontAttributes="Bold" CornerRadius="5" Padding="10" 
                         Command="{Binding LoginCommand}"/>
 
                 <!-- Loading Indicator -->
