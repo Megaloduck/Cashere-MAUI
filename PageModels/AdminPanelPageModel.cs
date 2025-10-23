@@ -127,6 +127,7 @@ namespace Cashere.PageModels
         public ICommand EditUserCommand { get; }
         public ICommand DeleteUserCommand { get; }
         public ICommand ResetPasswordCommand { get; }
+        public ICommand OpenDashboardCommand { get; }
 
         public AdminPanelPageModel()
         {
@@ -153,6 +154,8 @@ namespace Cashere.PageModels
             EditUserCommand = new Command<UserModel>(async user => await OnEditUserAsync(user));
             DeleteUserCommand = new Command<UserModel>(async user => await OnDeleteUserAsync(user));
             ResetPasswordCommand = new Command<UserModel>(async user => await OnResetPasswordAsync(user));
+
+            OpenDashboardCommand = new Command(async () => await Shell.Current.GoToAsync("dashboard"));
         }
 
         public async Task InitializeAsync()

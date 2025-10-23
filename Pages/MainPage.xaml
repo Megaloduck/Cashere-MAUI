@@ -14,7 +14,7 @@
     <Grid RowDefinitions="50,*" ColumnDefinitions="*,400">
 
         <!-- Header -->
-        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="200,*"
+        <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto"
               BackgroundColor="#2C3E50" Padding="15,0">
             <Label Text="☕ Cashere" 
                    FontSize="24" FontAttributes="Bold" 

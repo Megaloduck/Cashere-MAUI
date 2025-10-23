@@ -2,17 +2,19 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.AdminPanelPage"
-             Title="Admin Panel"
              BackgroundColor="#F5F5F5">
     
   <Grid RowDefinitions="60,*" Padding="0">
         
         <!-- Header -->
         <Grid Grid.Row="0" BackgroundColor="#2C3E50" Padding="20,10">
-            <Grid ColumnDefinitions="*,Auto">
+            <Grid ColumnDefinitions="*,Auto,Auto" >
                 <Label Grid.Column="0" Text="⚙️ Admin Panel" FontSize="24" 
                        FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
-                <Button Grid.Column="1" Text="← Back to Cashier" 
+                <Button  Grid.Column="1" Text="📊 Finance Dashboard" 
+                        BackgroundColor="#3498DB" TextColor="White"
+                        Command="{Binding OpenDashboardCommand}"/>
+                <Button Grid.Column="2" Text="← Back to Cashier" 
                         BackgroundColor="#3498DB" TextColor="White" 
                         Command="{Binding BackToCashierCommand}"/>
             </Grid>
@@ -26,19 +28,19 @@
                     <HorizontalStackLayout Spacing="10">
                         <Button Text="📊 Dashboard" 
                                 BackgroundColor="{Binding IsDashboardTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="Dashboard"/>
+                                Command="{Binding SelectTabCommand}" CommandParameter="Dashboard" TextColor="DarkSalmon"/>
                         <Button Text="📁 Categories" 
                                 BackgroundColor="{Binding IsCategoriesTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="Categories"/>
+                                Command="{Binding SelectTabCommand}" CommandParameter="Categories" TextColor="DarkSalmon"/>
                         <Button Text="🍽️ Menu Items" 
                                 BackgroundColor="{Binding IsMenuItemsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="MenuItems"/>
+                                Command="{Binding SelectTabCommand}" CommandParameter="MenuItems" TextColor="DarkSalmon"/>
                         <Button Text="💰 Tax Settings" 
                                 BackgroundColor="{Binding IsTaxSettingsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="TaxSettings"/>
+                                Command="{Binding SelectTabCommand}" CommandParameter="TaxSettings" TextColor="DarkSalmon"/>
                         <Button Text="👥 Users" 
                                 BackgroundColor="{Binding IsUsersTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="Users"/>
+                                Command="{Binding SelectTabCommand}" CommandParameter="Users" TextColor="DarkSalmon"/>
                     </HorizontalStackLayout>
                 </ScrollView>
 

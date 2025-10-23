@@ -688,6 +688,29 @@ namespace Cashere.Services
                 throw new Exception($"Failed to get recent transactions: {ex.Message}", ex);
             }
         }
+
+        public async Task<List<DailySummaryResponse>> GetDateRangeSummaryAsync(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var response = await _httpClient.GetAsync(
+                    $"{_baseUrl}/Dashboard/summary/date-range?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<List<DailySummaryResponse>>();
+                }
+
+                throw new Exception($"Error: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to get date range summary: {ex.Message}", ex);
+            }
+        }
     }
 
     // ============================================
@@ -740,7 +763,9 @@ namespace Cashere.Services
         public decimal TaxAmount { get; set; }
         public string Status { get; set; }
         public DateTime TransactionDate { get; set; }
+        public List<OrderItemDto> Items { get; set; } = new List<OrderItemDto>();
     }
+
 
     public class DailySummaryResponse
     {

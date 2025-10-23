@@ -2,17 +2,16 @@ using Cashere.PageModels;
 
 namespace Cashere.Pages;
 
-public partial class AdminPanelPage : ContentPage
+public partial class EnhancedDashboardPage : ContentPage
 {
-    private readonly AdminPanelPageModel _pageModel;
+    private readonly EnhancedDashboardPageModel _pageModel;
 
-    public AdminPanelPage()
+    public EnhancedDashboardPage()
     {
         InitializeComponent();
-        _pageModel = new AdminPanelPageModel();
+        _pageModel = new EnhancedDashboardPageModel();
         BindingContext = _pageModel;
     }
-
 
     protected override async void OnAppearing()
     {

@@ -4,6 +4,7 @@ using Syncfusion.Maui.Toolkit.Hosting;
 using Cashere.PageModels;
 using Cashere.Pages;
 using Cashere.Services;
+using Microcharts.Maui;
 
 namespace Cashere
 {
@@ -15,8 +16,9 @@ namespace Cashere
 
             builder
                 .UseMauiApp<App>()
-                .UseMauiCommunityToolkit()           // ✅ Enables toolkit features like Toast, Popup, etc.
-                .ConfigureSyncfusionToolkit()        // ✅ Initializes Syncfusion controls properly
+                .UseMicrocharts()                                // ✅ Enables Microcharts for data visualization
+                .UseMauiCommunityToolkit()             // ✅ Enables toolkit features like Toast, Popup, etc.
+                .ConfigureSyncfusionToolkit()            // ✅ Initializes Syncfusion controls properly
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
