@@ -18,6 +18,7 @@ namespace Cashere.Pages
         {
             base.OnAppearing();
             await _pageModel.InitializeAsync();
+
         }
 
         private async void OnMenuItemSelected(object sender, SelectionChangedEventArgs e)

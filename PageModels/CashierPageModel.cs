@@ -104,8 +104,10 @@ namespace Cashere.PageModels
             {
                 IsLoading = true;
 
-                // Load categories and items
                 var categories = await _apiService.GetMenuCategoriesAsync();
+
+                // 🧹 Fix: clear the collection to prevent duplication
+                Categories.Clear();
 
                 foreach (var category in categories)
                 {
@@ -116,7 +118,6 @@ namespace Cashere.PageModels
                         Description = category.Description,
                         DisplayOrder = category.DisplayOrder,
                         Items = new ObservableCollection<MenuItemModel>(
-
                             category.Items.Select(i => new MenuItemModel
                             {
                                 Id = i.Id,
@@ -131,14 +132,12 @@ namespace Cashere.PageModels
                     });
                 }
 
-                // Select first category
                 if (Categories.Any())
                 {
                     SelectedCategory = Categories.First();
                     OnSelectCategory(SelectedCategory);
                 }
 
-                // Get tax settings
                 var taxSettings = await _apiService.GetTaxSettingsAsync();
                 _taxRate = taxSettings.DefaultTaxRate;
             }
