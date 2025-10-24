@@ -283,8 +283,17 @@ namespace Cashere.PageModels
                 if (!confirm)
                     return; // User chose to stay
             }
-
-            await Shell.Current.GoToAsync("..");
+            try
+            {
+                // Simple back navigation
+                await Shell.Current.GoToAsync("..");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Navigation error: {ex.Message}");
+                // Fallback: close page manually
+                await Application.Current!.MainPage!.Navigation.PopAsync();
+            }
         }
     }
 }
