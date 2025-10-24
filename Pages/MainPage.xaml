@@ -11,7 +11,7 @@
              Background="#F5F5F5"
              Title="{Binding Today}">
 
-    <Grid RowDefinitions="50,*" ColumnDefinitions="*,400">
+    <Grid RowDefinitions="auto,*" ColumnDefinitions="*,400">
 
         <!-- Header -->
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto"
@@ -111,11 +111,8 @@
             <Grid RowDefinitions="40,*,200">
 
                 <!-- Cart Header -->
-                <Label Grid.Row="0"
-               Text="🛒 Shopping Cart"
-               FontSize="18"
-               FontAttributes="Bold"
-               VerticalOptions="Center" />
+                <Label Grid.Row="0" Text="🛒 Shopping Cart" FontSize="18"
+                       FontAttributes="Bold" VerticalOptions="Center" />
 
                 <!-- Cart Items List -->
                 <CollectionView Grid.Row="1"

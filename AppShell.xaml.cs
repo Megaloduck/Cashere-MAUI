@@ -17,6 +17,11 @@ namespace Cashere
             Routing.RegisterRoute("checkout", typeof(CheckoutPage));
             Routing.RegisterRoute("admin", typeof(AdminPanelPage));
             Routing.RegisterRoute("dashboard", typeof(EnhancedDashboardPage));
+            Routing.RegisterRoute("addEditMenuItem", typeof(AddEditMenuItemPage));
+
+            // Debug: Print all registered routes
+            System.Diagnostics.Debug.WriteLine("=== Registered Routes ===");
+            // Routes are internal, so we can't list them easily, but check for duplicates manually
         }
     }
 }

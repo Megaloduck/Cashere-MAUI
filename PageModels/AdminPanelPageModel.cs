@@ -498,10 +498,14 @@ namespace Cashere.PageModels
                         MenuItems.Add(new MenuItemModel
                         {
                             Id = item.Id,
+                            CategoryId = cat.Id, 
                             Name = item.Name,
                             Description = item.Description,
                             Price = item.Price,
-                            IsTaxable = item.IsTaxable
+                            IsTaxable = item.IsTaxable,
+                            DisplayOrder = item.DisplayOrder,
+                            IsActive = true, 
+                            Category = cat.Name
                         });
                     }
                 }
@@ -519,16 +523,17 @@ namespace Cashere.PageModels
 
         private async Task OnAddMenuItemAsync()
         {
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                Application.Current!.MainPage!.DisplayAlert("Add Item", "Use Category selection and item form (implement full form)", "OK"));
-            // TODO: Implement full form with category dropdown, price, etc.
+            await Shell.Current.GoToAsync("addEditMenuItem");
         }
 
         private async Task OnEditMenuItemAsync(MenuItemModel item)
         {
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                Application.Current!.MainPage!.DisplayAlert("Edit Item", $"Edit {item.Name} (implement full form)", "OK"));
-            // TODO: Implement full editing form
+            // Navigate to edit form with item data
+            var navigationParameter = new Dictionary<string, object>
+            {
+                { "menuItem", item }
+            };
+            await Shell.Current.GoToAsync("addEditMenuItem", navigationParameter);
         }
 
         private async Task OnDeleteMenuItemAsync(MenuItemModel item)

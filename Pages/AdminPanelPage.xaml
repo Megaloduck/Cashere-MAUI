@@ -4,17 +4,17 @@
              x:Class="Cashere.Pages.AdminPanelPage"
              BackgroundColor="#F5F5F5">
     
-  <Grid RowDefinitions="60,*" Padding="0">
+  <Grid RowDefinitions="auto,*" Padding="0">
         
         <!-- Header -->
         <Grid Grid.Row="0" BackgroundColor="#2C3E50" Padding="20,10">
-            <Grid ColumnDefinitions="*,Auto,Auto" >
+            <Grid ColumnDefinitions="*,Auto,5,Auto" >
                 <Label Grid.Column="0" Text="⚙️ Admin Panel" FontSize="24" 
                        FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
                 <Button  Grid.Column="1" Text="📊 Finance Dashboard" 
                         BackgroundColor="#3498DB" TextColor="White"
                         Command="{Binding OpenDashboardCommand}"/>
-                <Button Grid.Column="2" Text="← Back to Cashier" 
+                <Button Grid.Column="3" Text="← Back to Cashier" 
                         BackgroundColor="#3498DB" TextColor="White" 
                         Command="{Binding BackToCashierCommand}"/>
             </Grid>
@@ -45,9 +45,10 @@
                 </ScrollView>
 
                 <!-- Tab Content -->
-                <ScrollView Padding="20">
-                    <StackLayout>
-                        
+                <ScrollView Orientation="Vertical" Padding="20">
+                    <VerticalStackLayout Spacing="5">
+
+
                         <!-- Dashboard Tab -->
                         <StackLayout IsVisible="{Binding IsDashboardTab}" Spacing="15">
                             <Label Text="Finance Dashboard" FontSize="20" FontAttributes="Bold"/>
@@ -112,7 +113,11 @@
                                     TextColor="White" Command="{Binding AddCategoryCommand}"/>
                             </Grid>
 
-                            <CollectionView ItemsSource="{Binding Categories}">
+                            <CollectionView ItemsSource="{Binding Categories}" HeightRequest="500">
+                                <CollectionView.ItemsLayout>
+                                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                                </CollectionView.ItemsLayout>
+                                
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Frame Margin="0,5" Padding="15" BackgroundColor="White" CornerRadius="5">
@@ -146,7 +151,12 @@
                                     TextColor="White" Command="{Binding AddMenuItemCommand}"/>
                             </Grid>
 
-                            <CollectionView ItemsSource="{Binding MenuItems}">
+
+                            <CollectionView ItemsSource="{Binding MenuItems}" HeightRequest="500">
+                                <CollectionView.ItemsLayout>
+                                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                                </CollectionView.ItemsLayout>
+
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Frame Margin="0,5" Padding="15" BackgroundColor="White" CornerRadius="5">
@@ -172,6 +182,7 @@
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
+
                         </StackLayout>
 
                         <!-- Tax Settings Tab -->
@@ -209,7 +220,11 @@
                                     TextColor="White" Command="{Binding AddUserCommand}"/>
                             </Grid>
 
-                            <CollectionView ItemsSource="{Binding Users}">
+                            <CollectionView ItemsSource="{Binding Users}" HeightRequest="500">
+                                <CollectionView.ItemsLayout>
+                                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                                </CollectionView.ItemsLayout>
+
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Frame Margin="0,5" Padding="15" BackgroundColor="White" CornerRadius="5">
@@ -240,11 +255,16 @@
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
                         </StackLayout>
-                        
-                    </StackLayout>
+
+
+                    </VerticalStackLayout>
 
                 </ScrollView>
-                
+
+
+
+
+
             </StackLayout>
         </Grid>
     </Grid>

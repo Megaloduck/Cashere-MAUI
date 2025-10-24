@@ -486,6 +486,79 @@ namespace Cashere.Services
         }
 
         // ============ ADMIN - MENU ITEMS ============
+        public async Task<MenuItemResponse> CreateMenuItemAsync( int categoryId, string name, string description, decimal price, bool isTaxable, decimal? customTaxRate, int displayOrder)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new
+                {
+                    CategoryId = categoryId,
+                    Name = name,
+                    Description = description,
+                    Price = price,
+                    IsTaxable = isTaxable,
+                    CustomTaxRate = customTaxRate,
+                    DisplayOrder = displayOrder
+                };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync($"{_baseUrl}/admin/MenuManagement/item", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<MenuItemResponse>();
+                }
+
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error: {error}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create menu item: {ex.Message}", ex);
+            }
+        }
+
+        public async Task<MenuItemResponse> UpdateMenuItemAsync( int id, int categoryId, string name, string description, decimal price, bool isTaxable, decimal? customTaxRate, bool isActive, int displayOrder)
+        {
+            try
+            {
+                await LoadStoredTokenAsync();
+                SetAuthorizationHeader();
+
+                var request = new
+                {
+                    CategoryId = categoryId,
+                    Name = name,
+                    Description = description,
+                    Price = price,
+                    IsTaxable = isTaxable,
+                    CustomTaxRate = customTaxRate,
+                    IsActive = isActive,
+                    DisplayOrder = displayOrder
+                };
+                var json = JsonSerializer.Serialize(request);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PutAsync($"{_baseUrl}/admin/MenuManagement/item/{id}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsAsync<MenuItemResponse>();
+                }
+
+                var error = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Error: {error}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to update menu item: {ex.Message}", ex);
+            }
+        }
+
         public async Task<bool> DeleteMenuItemAsync(int id)
         {
             try
@@ -765,7 +838,6 @@ namespace Cashere.Services
         public DateTime TransactionDate { get; set; }
         public List<OrderItemDto> Items { get; set; } = new List<OrderItemDto>();
     }
-
 
     public class DailySummaryResponse
     {

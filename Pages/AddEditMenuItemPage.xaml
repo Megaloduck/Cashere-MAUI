@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Cashere.Pages.AddEditMenuItemPage"
+             BackgroundColor="#F5F5F5">
+
+    <Grid RowDefinitions="60,*,80" Padding="0">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" BackgroundColor="#2C3E50" Padding="20,10">
+            <Label Text="{Binding PageTitle}" FontSize="24" 
+                   FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- Form Content -->
+        <ScrollView Grid.Row="1" Padding="20">
+            <StackLayout Spacing="15">
+
+                <!-- Menu Item Name -->
+                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
+                    <StackLayout Spacing="8">
+                        <Label Text="Item Name *" FontSize="12" FontAttributes="Bold" 
+                               TextColor="#333"/>
+                        <Entry Text="{Binding ItemName}" TextColor= "#6E6E6E"
+                               Placeholder="e.g., Cappuccino, Caesar Salad" PlaceholderColor="#C3C3C3"
+                               FontSize="14"/>
+                        <Label Text="This will appear on the menu" 
+                               FontSize="10" TextColor="#999"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Description -->
+                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
+                    <StackLayout Spacing="8">
+                        <Label Text="Description" FontSize="12" FontAttributes="Bold" 
+                               TextColor="#333"/>
+                        <Editor Text="{Binding Description}"  TextColor= "#6E6E6E"
+                                Placeholder="Brief description of the item" PlaceholderColor="#C3C3C3"
+                                HeightRequest="80"
+                                FontSize="14"/>
+                        <Label Text="Optional: Add details about ingredients or preparation" 
+                               FontSize="10" TextColor="#999"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Category Selection -->
+                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
+                    <StackLayout Spacing="8">
+                        <Label Text="Category *" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
+                        <Picker ItemsSource="{Binding Categories}" 
+                                ItemDisplayBinding="{Binding Name}"
+                                SelectedItem="{Binding SelectedCategory}"
+                                Title="Select a category"
+                                FontSize="14"/>
+                        <Label Text="Choose which category this item belongs to" 
+                               FontSize="10" TextColor="#999"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Price -->
+                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
+                    <StackLayout Spacing="8">
+                        <Label Text="Price (Rp) *" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Label Grid.Column="0" Text="Rp" 
+                                   FontSize="16" FontAttributes="Bold" 
+                                   TextColor="#27AE60" VerticalOptions="Center"/>
+                            <Entry Grid.Column="1" Text="{Binding Price}" 
+                                   Placeholder="25000"
+                                   Keyboard="Numeric"
+                                   FontSize="16" FontAttributes="Bold"/>
+                        </Grid>
+                        <Label Text="Enter price without commas (e.g., 25000 for Rp 25,000)" 
+                               FontSize="10" TextColor="#999"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Display Order -->
+                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
+                    <StackLayout Spacing="8">
+                        <Label Text="Display Order" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Button Grid.Column="0" Text="-" 
+                                    BackgroundColor="#E74C3C" TextColor="White"
+                                    WidthRequest="40" HeightRequest="40"
+                                    Command="{Binding DecreaseOrderCommand}"/>
+                            <Entry Grid.Column="1" Text="{Binding DisplayOrder}" 
+                                   Keyboard="Numeric"
+                                   HorizontalTextAlignment="Center"
+                                   FontSize="16" FontAttributes="Bold"/>
+                            <Button Grid.Column="2" Text="+" 
+                                    BackgroundColor="#27AE60" TextColor="White"
+                                    WidthRequest="40" HeightRequest="40"
+                                    Command="{Binding IncreaseOrderCommand}"/>
+                        </Grid>
+                        <Label Text="Lower numbers appear first in the menu" 
+                               FontSize="10" TextColor="#999"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Tax Settings -->
+                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
+                    <StackLayout Spacing="8">
+                        <Label Text="Tax Settings" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
+
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsTaxable}"/>
+                            <Label Grid.Column="1" Text="This item is taxable" 
+                                   VerticalOptions="Center" FontSize="14"/>
+                        </Grid>
+
+                        <StackLayout IsVisible="{Binding IsTaxable}" Spacing="8">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <CheckBox Grid.Column="0" IsChecked="{Binding HasCustomTaxRate}"/>
+                                <Label Grid.Column="1" Text="Use custom tax rate" 
+                                       VerticalOptions="Center" FontSize="14"/>
+                            </Grid>
+
+                            <StackLayout IsVisible="{Binding HasCustomTaxRate}" Spacing="5">
+                                <Label Text="Custom Tax Rate (%)" FontSize="12"/>
+                                <Entry Text="{Binding CustomTaxRate}" 
+                                       Placeholder="e.g., 5 for 5%"
+                                       Keyboard="Numeric"
+                                       FontSize="14"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <Label Text="Most items use the default tax rate. Only use custom rate for special cases." 
+                               FontSize="10" TextColor="#999"/>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Status -->
+                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
+                    <StackLayout Spacing="8">
+                        <Label Text="Status" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                            <Switch Grid.Column="0" IsToggled="{Binding IsActive}"/>
+                            <Label Grid.Column="1" 
+                                   Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Active (Visible in menu)|Inactive (Hidden from menu)'}" 
+                                   VerticalOptions="Center" FontSize="14"/>
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Action Buttons -->
+        <Grid Grid.Row="2" BackgroundColor="White" Padding="15,10" 
+              ColumnDefinitions="*,*" ColumnSpacing="10">
+
+            <Button Grid.Column="0" Text="Cancel" 
+                    BackgroundColor="#95A5A6" TextColor="White"
+                    Command="{Binding CancelCommand}"
+                    FontSize="14" Padding="15,10"/>
+            <Button Grid.Column="1" Text="{Binding SaveButtonText}" 
+                    BackgroundColor="#27AE60" TextColor="White"
+                    Command="{Binding SaveCommand}"
+                    FontSize="14" FontAttributes="Bold" Padding="15,10"/>
+        </Grid>
+    </Grid>
+</ContentPage>
