@@ -24,7 +24,7 @@
                         Opacity="0.3"/>
             </Border.Shadow>
 
-            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" 
+            <Grid ColumnDefinitions="Auto,*,50,Auto,Auto" 
                   Padding="20,12" 
                   ColumnSpacing="15">
 
@@ -72,14 +72,13 @@
                 <!-- Theme Toggle -->
                 <Button Grid.Column="2" 
                         x:Name="ThemeToggleButton"
-                        FontSize="20"
-                        BackgroundColor="Transparent"
+                        FontSize="14"
+                        BackgroundColor="{DynamicResource BorderColor}"
                         TextColor="{DynamicResource PrimaryTextColor}"
-                        BorderWidth="1"
-                        BorderColor="{DynamicResource BorderColor}"
-                        CornerRadius="20"
-                        WidthRequest="40"
-                        HeightRequest="40"
+                        BorderWidth="2"
+                        CornerRadius="15"
+                        Margin="-5,0"
+                         Padding="20,8"
                         Clicked="OnThemeToggleClicked"/>
 
                 <!-- Admin Panel Button -->
@@ -117,7 +116,7 @@
         </Border>
 
         <!-- Menu Section (Left Side) -->
-        <Grid Grid.Row="1" Grid.Column="0" Padding="15" RowDefinitions="Auto,*" RowSpacing="15">
+        <Grid Grid.Row="1" Grid.Column="0" Padding="15" RowDefinitions="Auto,*" RowSpacing="10">
 
             <!-- Enhanced Category Tabs -->
             <ScrollView Grid.Row="0" Orientation="Horizontal" 
@@ -146,8 +145,8 @@
                                     <Label Text="{Binding Name}" 
                                            FontSize="14" 
                                            FontAttributes="Bold"
-                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter},
-                                                      ConverterParameter='#FFFFFF|Dynamic:PrimaryTextColor'}"/>
+                                           TextColor="{DynamicResource PrimaryTextColor}" 
+                                          />
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -242,8 +241,7 @@
                                                     BackgroundColor="{DynamicResource PrimaryColor}" 
                                                     TextColor="White" 
                                                     CornerRadius="20" 
-                                                    WidthRequest="40"
-                                                    HeightRequest="40"
+
                                                     FontSize="20"
                                                     FontAttributes="Bold"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
