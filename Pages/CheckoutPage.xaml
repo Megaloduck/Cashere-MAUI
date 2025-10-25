@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.CheckoutPage"
+                xmlns:models="clr-namespace:Cashere.Models"
              BackgroundColor="#F5F5F5">
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="0">
@@ -32,8 +33,12 @@
 
                         <!-- Cart Items -->
                         <CollectionView ItemsSource="{Binding CartItems}" HeightRequest="300">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                            </CollectionView.ItemsLayout>
+                            
                             <CollectionView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="models:CartItemModel">
                                     <Grid ColumnDefinitions="*,Auto" Padding="10,5" >
 
                                         <StackLayout Grid.Column="0">

@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace Cashere.PageModels
 {
-    public class CheckoutPageModel : BasePageModel
+    public class CheckoutPageModel : BasePageModel, IQueryAttributable
     {
         private readonly ApiService _apiService;
         private ObservableCollection<CartItemModel> _cartItems;
@@ -125,10 +125,10 @@ namespace Cashere.PageModels
         public ICommand AddQuickAmountCommand { get; }
         public ICommand PreviewReceiptCommand { get; }
 
-        public CheckoutPageModel()
+        public CheckoutPageModel(List<CartItemModel> cartItems = null)
         {
             _apiService = new ApiService();
-            CartItems = new ObservableCollection<CartItemModel>();
+            CartItems = new ObservableCollection<CartItemModel>(cartItems ?? new List<CartItemModel>());
 
             ProcessPaymentCommand = new Command(OnProcessPayment);
             CancelCommand = new Command(OnCancel);

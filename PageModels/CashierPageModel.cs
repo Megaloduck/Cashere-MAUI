@@ -241,7 +241,7 @@ namespace Cashere.PageModels
             }
 
             // Navigate to checkout page
-            await Shell.Current.GoToAsync("checkout");
+            await Shell.Current.Navigation.PushAsync(new CheckoutPage(CartItems.ToList()));
         }
 
         public void RecalculateCartTotals()
