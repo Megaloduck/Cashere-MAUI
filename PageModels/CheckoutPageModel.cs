@@ -124,6 +124,7 @@ namespace Cashere.PageModels
         public ICommand SetExactAmountCommand { get; }
         public ICommand AddQuickAmountCommand { get; }
         public ICommand PreviewReceiptCommand { get; }
+        public ICommand SelectPaymentMethodCommand { get; }
 
         public CheckoutPageModel(List<CartItemModel> cartItems = null)
         {
@@ -136,6 +137,18 @@ namespace Cashere.PageModels
             SetExactAmountCommand = new Command(OnSetExactAmount);
             AddQuickAmountCommand = new Command<string>(OnAddQuickAmount);
             PreviewReceiptCommand = new Command(OnPreviewReceipt);
+            SelectPaymentMethodCommand = new Command<string>(OnSelectPaymentMethod);
+        }
+        private void OnSelectPaymentMethod(string method)
+        {
+            if (method == "Cash")
+            {
+                IsCashSelected = true;
+            }
+            else if (method == "QRIS")
+            {
+                IsQRISSelected = true;
+            }
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)

@@ -3,258 +3,422 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.CheckoutPage"
                 xmlns:models="clr-namespace:Cashere.Models"
-             BackgroundColor="#F5F5F5">
+              BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="0">
+    <Grid RowDefinitions="Auto,*" Padding="20" RowSpacing="20">
 
         <!-- Header -->
-        <Grid Grid.Row="0" BackgroundColor="#2C3E50" Padding="20,10">
-            <Grid ColumnDefinitions="*,Auto">
-                <StackLayout Grid.Column="0" VerticalOptions="Center">
-                    <Label Text="💳 Checkout" FontSize="24" FontAttributes="Bold" TextColor="White"/>
-                    <Label Text="{Binding OrderNumber, StringFormat='Order: {0}'}" 
-                           FontSize="12" TextColor="#BDC3C7"/>
+        <Border Grid.Row="0"
+                BackgroundColor="{DynamicResource HeaderBackgroundColor}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 15"
+                Padding="20">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Label Grid.Column="0" 
+                       Text="🔒" 
+                       FontSize="28" 
+                       VerticalOptions="Center"/>
+                <StackLayout Grid.Column="1" Spacing="2" Margin="15,0,0,0">
+                    <Label Text="Checkout" 
+                           FontSize="24"
+                           FontAttributes="Bold" 
+                           TextColor="White"/>
+                    <Label Text="{Binding OrderNumber, StringFormat='Order #{0}'}"
+                           FontSize="14"
+                           TextColor="#CCCCCC"/>
                 </StackLayout>
-                <Button Grid.Column="1" Text="✕ Cancel" 
-                        BackgroundColor="#E74C3C" TextColor="White"
+                <Button Grid.Column="2"
+                        Text="✕"
+                        FontSize="20"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        WidthRequest="40"
+                        HeightRequest="40"
                         Command="{Binding CancelCommand}"/>
             </Grid>
-        </Grid>
+        </Border>
 
-        <!-- Content -->
-        <ScrollView Grid.Row="1" Padding="20">
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20">
+        <!-- Main Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,400" ColumnSpacing="20">
 
-                <!-- Left: Order Summary -->
-                <Frame Grid.Column="0" BackgroundColor="White" Padding="20" 
-                       CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="15">
-                        <Label Text="📋 Order Summary" FontSize="18" FontAttributes="Bold"/>
+            <!-- Left: Order Summary -->
+            <Border Grid.Column="0" 
+                    BackgroundColor="{DynamicResource CardBackgroundColor}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 15"
+                    Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="{DynamicResource ShadowColor}" 
+                            Offset="0,4" 
+                            Radius="12" 
+                            Opacity="0.15"/>
+                </Border.Shadow>
 
-                        <!-- Cart Items -->
-                        <CollectionView ItemsSource="{Binding CartItems}" HeightRequest="300">
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="15">
+
+                    <!-- Title -->
+                    <Label Grid.Row="0" 
+                           Text="📋 Order Summary" 
+                           FontSize="20" 
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource PrimaryTextColor}"/>
+
+                    <!-- Cart Items -->
+                    <ScrollView Grid.Row="1">
+                        <CollectionView ItemsSource="{Binding CartItems}">
                             <CollectionView.ItemsLayout>
                                 <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
                             </CollectionView.ItemsLayout>
-                            
                             <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="models:CartItemModel">
-                                    <Grid ColumnDefinitions="*,Auto" Padding="10,5" >
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,12"
+                                           BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                           StrokeThickness="0"
+                                           StrokeShape="RoundRectangle 10"
+                                           Padding="15">
+                                        <Grid RowDefinitions="Auto,Auto" RowSpacing="8">
+                                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                                <Label Grid.Column="0"
+                                                       Text="{Binding ItemName}" 
+                                                       FontSize="15" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                                                <Label Grid.Column="1" 
+                                                       VerticalTextAlignment="Center"
+                                                       Text="{Binding SubtotalAmount, StringFormat='Rp {0:N0}'}" 
+                                                       FontSize="15" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="{DynamicResource SuccessColor}"/>
+                                            </Grid>
 
-                                        <StackLayout Grid.Column="0">
-                                            <Label Text="{Binding ItemName}" 
-                                                   FontSize="13" FontAttributes="Bold"/>
-                                            <Label Text="{Binding Quantity, StringFormat='{0} x Rp {1:N0}'}" 
-                                                   FontSize="11" TextColor="#666"/>
-                                        </StackLayout>
-                                        <Label Grid.Column="1" 
-                                               Text="{Binding TotalAmount, StringFormat='Rp {0:N0}'}" 
-                                               FontSize="13" FontAttributes="Bold" 
-                                               TextColor="#27AE60" VerticalOptions="Center"/>
-                                    </Grid>
+                                            <Label Grid.Row="1" 
+                                                   FontSize="13" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding Quantity}"/>
+                                                        <Span Text=" × Rp "/>
+                                                        <Span Text="{Binding UnitPrice, StringFormat='{0:N0}'}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+
+                                        </Grid>
+                                    </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>
+                    </ScrollView>
 
-                        <!-- Totals -->
-                        <BoxView HeightRequest="2" BackgroundColor="#EEEEEE"/>
-
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label Grid.Column="0" Text="Subtotal:" FontSize="13"/>
-                            <Label Grid.Column="1" Text="{Binding Subtotal, StringFormat='Rp {0:N0}'}" 
-                                   FontSize="13" FontAttributes="Bold"/>
-                        </Grid>
+                    <!-- Totals -->
+                    <StackLayout Grid.Row="2" Spacing="12">
+                        <BoxView HeightRequest="1" BackgroundColor="{DynamicResource DividerColor}"/>
 
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Grid.Column="0" Text="Tax (10%):" FontSize="13"/>
-                            <Label Grid.Column="1" Text="{Binding Tax, StringFormat='Rp {0:N0}'}" 
-                                   FontSize="13" FontAttributes="Bold" TextColor="#E67E22"/>
+                            <Label Grid.Column="0" 
+                                   Text="Subtotal:" 
+                                   FontSize="14"
+                                   TextColor="{DynamicResource SecondaryTextColor}"/>
+                            <Label Grid.Column="1" 
+                                   Text="{Binding Subtotal, StringFormat='Rp {0:N0}'}" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"/>
                         </Grid>
 
-                        <Grid ColumnDefinitions="*,Auto" BackgroundColor="#27AE60" 
-                              Padding="15,10">
-                            <Label Grid.Column="0" Text="TOTAL:" 
-                                   FontSize="16" FontAttributes="Bold" TextColor="White"/>
-                            <Label Grid.Column="1" Text="{Binding Total, StringFormat='Rp {0:N0}'}" 
-                                   FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" 
+                                   Text="Tax (10%):" 
+                                   FontSize="14"
+                                   TextColor="{DynamicResource SecondaryTextColor}"/>
+                            <Label Grid.Column="1" 
+                                   Text="{Binding Tax, StringFormat='Rp {0:N0}'}" 
+                                   FontSize="14" 
+                                   FontAttributes="Bold" 
+                                   TextColor="{DynamicResource AccentColor}"/>
                         </Grid>
 
-                        <!-- Print Receipt Button -->
-                        <Button Text="🖨️ Print Receipt Preview" 
-                                BackgroundColor="#95A5A6" TextColor="White"
-                                Command="{Binding PreviewReceiptCommand}"
-                                Margin="0,10,0,0"/>
+                        <Border BackgroundColor="{DynamicResource SuccessColor}"
+                               StrokeThickness="0"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15,10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" 
+                                       Text="TOTAL:" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White"/>
+                                <Label Grid.Column="1" 
+                                       Text="{Binding Total, StringFormat='Rp {0:N0}'}" 
+                                       FontSize="20" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White"/>
+                            </Grid>
+                        </Border>
+
+                        <Button Text="🖨️ Preview Receipt" 
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource SecondaryTextColor}"
+                                BorderColor="{DynamicResource BorderColor}"
+                                BorderWidth="1"
+                                CornerRadius="10"
+                                Command="{Binding PreviewReceiptCommand}"/>
                     </StackLayout>
-                </Frame>
+                </Grid>
+            </Border>
 
-                <!-- Right: Payment Method -->
-                <Frame Grid.Column="1" BackgroundColor="White" Padding="20" 
-                       CornerRadius="10" HasShadow="True">
+            <!-- Right: Payment Method -->
+            <Border Grid.Column="1"
+                    BackgroundColor="{DynamicResource CardBackgroundColor}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 15"
+                    Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="{DynamicResource ShadowColor}" 
+                            Offset="0,4" 
+                            Radius="12" 
+                            Opacity="0.15"/>
+                </Border.Shadow>
+
+                <ScrollView>
                     <StackLayout Spacing="20">
-                        <Label Text="💰 Payment Method" FontSize="18" FontAttributes="Bold"/>
 
-                        <!-- Cash Payment -->
-                        <Frame BorderColor="{Binding IsCashSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#CCCCCC'}" 
-                                Padding="15" CornerRadius="10" 
-                               BackgroundColor="{Binding IsCashSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#EBF5FB|White'}">
-                            <StackLayout Spacing="15">
-                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
-                                    <Frame Grid.Column="0" BackgroundColor="#3498DB" 
-                                           Padding="15" CornerRadius="10" HasShadow="False"
-                                           WidthRequest="60" HeightRequest="60">
-                                        <Label Text="💵" FontSize="30" 
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
-                                    </Frame>
-                                    <StackLayout Grid.Column="1" VerticalOptions="Center">
-                                        <Label Text="Cash Payment" FontSize="16" FontAttributes="Bold"/>
-                                        <Label Text="Pay with physical cash" FontSize="12" TextColor="#666"/>
-                                    </StackLayout>
-                                </Grid>
-
-                                <RadioButton IsChecked="{Binding IsCashSelected}" 
-                                           GroupName="PaymentMethod"
-                                           Content="Select Cash Payment"
-                                           FontSize="14"/>
-
-                                <StackLayout IsVisible="{Binding IsCashSelected}" Spacing="10">
-                                    <Label Text="Amount Received:" FontSize="13" FontAttributes="Bold"/>
-                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                                        <Label Grid.Column="0" Text="Rp" FontSize="18" 
-                                               FontAttributes="Bold" TextColor="#27AE60" 
-                                               VerticalOptions="Center"/>
-                                        <Entry Grid.Column="1" Text="{Binding CashAmountPaid}" 
-                                               Placeholder="Enter amount"
-                                               Keyboard="Numeric" FontSize="18" FontAttributes="Bold"
-                                               PlaceholderColor="#CCCCCC"/>
-                                    </Grid>
-
-                                    <!-- Quick Amount Buttons -->
-                                    <Label Text="Quick Amount:" FontSize="12" TextColor="#666"/>
-                                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="5">
-                                        <Button Grid.Column="0" Text="Exact" 
-                                                BackgroundColor="#3498DB" TextColor="White"
-                                                Command="{Binding SetExactAmountCommand}"/>
-                                        <Button Grid.Column="1" Text="+ Rp 50K" 
-                                                BackgroundColor="#3498DB" TextColor="White"
-                                                Command="{Binding AddQuickAmountCommand}"
-                                                CommandParameter="50000"/>
-                                        <Button Grid.Column="2" Text="+ Rp 100K" 
-                                                BackgroundColor="#3498DB" TextColor="White"
-                                                Command="{Binding AddQuickAmountCommand}"
-                                                CommandParameter="100000"/>
-                                    </Grid>
-
-                                    <!-- Change Display -->
-                                    <Frame BackgroundColor="#D5F4E6" Padding="15" 
-                                           CornerRadius="5" HasShadow="False"
-                                           IsVisible="{Binding ShowChange}">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <Label Grid.Column="0" Text="Change:" 
-                                                   FontSize="15" FontAttributes="Bold" 
-                                                   TextColor="#27AE60"/>
-                                            <Label Grid.Column="1" 
-                                                   Text="{Binding Change, StringFormat='Rp {0:N0}'}" 
-                                                   FontSize="16" FontAttributes="Bold" 
-                                                   TextColor="#27AE60"/>
+                        <!-- Payment Method Title -->
+                        <Label Text="💳 Payment Method" 
+                               FontSize="20" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"/>
+                        
+                        <!-- Cash RadioButton -->
+                        <RadioButton Content="Cash"
+                                     IsChecked="{Binding IsCashSelected}"
+                                     GroupName="PaymentMethod">
+                            <RadioButton.ControlTemplate>
+                                <ControlTemplate>
+                                    <Border StrokeThickness="2"
+                                            Stroke="{Binding IsCashSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:BorderColor'}"
+                                            StrokeShape="RoundRectangle 12"
+                                            BackgroundColor="{Binding IsCashSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#E3F2FD|Transparent'}"
+                                            Shadow="{Binding IsCashSelected, Converter={StaticResource BoolToShadowConverter}}"
+                                            Padding="20">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Label Grid.Column="0" 
+                                                   Text="💵" 
+                                                   FontSize="32"/>
+                                            <StackLayout Grid.Column="1" Margin="15,0" VerticalOptions="Center">
+                                                <Label Text="Cash"                                                        
+                                                       FontSize="18" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                                                <Label Text="Pay with cash" 
+                                                       FontSize="13"
+                                                       TextColor="{DynamicResource SecondaryTextColor}"/>
+                                            </StackLayout>
+                                            <Label Grid.Column="2" 
+                                                   Text="{Binding IsCashSelected, Converter={StaticResource BoolToCheckConverter}}"
+                                                   FontSize="24"
+                                                   TextColor="{DynamicResource PrimaryColor}"
+                                                   VerticalOptions="Center"/>
                                         </Grid>
-                                    </Frame>
+                                    </Border>
+                                </ControlTemplate>
+                            </RadioButton.ControlTemplate>
+                        </RadioButton>
 
-                                    <Label IsVisible="{Binding ShowInsufficientWarning}"
-                                           Text="⚠️ Insufficient amount! Please enter more."
-                                           TextColor="#E74C3C" FontSize="12" FontAttributes="Bold"/>
-                                </StackLayout>
-                            </StackLayout>
-                        </Frame>
+                        <!-- QRIS RadioButton -->
+                        <RadioButton Content="QRIS"
+                                     IsChecked="{Binding IsQRISSelected}"
+                                     GroupName="PaymentMethod">
+                            <RadioButton.ControlTemplate>
+                                <ControlTemplate>
+                                    <Border StrokeThickness="2"
+                                            Stroke="{Binding IsQRISSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:BorderColor'}"
+                                            StrokeShape="RoundRectangle 12"
+                                            BackgroundColor="{Binding IsQRISSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#E3F2FD|Transparent'}"
+                                            Shadow="{Binding IsQRISSelected, Converter={StaticResource BoolToShadowConverter}}"
+                                            Padding="20">
+                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                            <Label Grid.Column="0" 
+                                                   Text="📱" 
+                                                   FontSize="32"/>
+                                            <StackLayout Grid.Column="1" Margin="15,0" VerticalOptions="Center">
+                                                <Label Text="QRIS" 
+                                                       FontSize="18" 
+                                                       FontAttributes="Bold"
+                                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                                                <Label Text="Scan to pay" 
+                                                       FontSize="13"
+                                                       TextColor="{DynamicResource SecondaryTextColor}"/>
+                                            </StackLayout>
+                                            <Label Grid.Column="2" 
+                                                   Text="{Binding IsQRISSelected, Converter={StaticResource BoolToCheckConverter}}"
+                                                   FontSize="24"
+                                                   TextColor="{DynamicResource PrimaryColor}"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </RadioButton.ControlTemplate>
+                        </RadioButton>
 
-                        <!-- QRIS Payment -->
-                        <Frame BorderColor="{Binding IsQRISSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#9B59B6|#CCCCCC'}" 
-                                Padding="15" CornerRadius="10"
-                               BackgroundColor="{Binding IsQRISSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#F4ECF7|White'}">
-                            <StackLayout Spacing="15">
-                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
-                                    <Frame Grid.Column="0" BackgroundColor="#9B59B6" 
-                                           Padding="15" CornerRadius="10" HasShadow="False"
-                                           WidthRequest="60" HeightRequest="60">
-                                        <Label Text="📱" FontSize="30" 
-                                               HorizontalOptions="Center" VerticalOptions="Center"/>
-                                    </Frame>
-                                    <StackLayout Grid.Column="1" VerticalOptions="Center">
-                                        <Label Text="QRIS Payment" FontSize="16" FontAttributes="Bold"/>
-                                        <Label Text="Scan QR code with any e-wallet" FontSize="12" TextColor="#666"/>
-                                    </StackLayout>
+                        <!-- Waiting Notification -->
+                        <Label Text="⏳ Waiting for payment confirmation..."
+                               FontSize="14"
+                               TextColor="{DynamicResource SecondaryTextColor}"
+                               HorizontalOptions="Center"
+                               Margin="0,10,0,0"
+                               IsVisible="{Binding IsQRISSelected}" />
+                        
+                        <!-- Cash Payment Details -->
+                        <StackLayout IsVisible="{Binding IsCashSelected}" Spacing="15">
+                            <Label Text="Cash Amount" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"/>
+
+                            <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   StrokeThickness="1"
+                                   Stroke="{DynamicResource BorderColor}"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="15">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Label Grid.Column="0" 
+                                           Text="Rp" 
+                                           FontSize="20" 
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           VerticalOptions="Center"
+                                           Margin="0,0,10,0"/>
+                                    <Entry Grid.Column="1"
+                                           Text="{Binding CashAmountPaid}"
+                                           Keyboard="Numeric"
+                                           FontSize="24"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           BackgroundColor="Transparent"
+                                           HorizontalTextAlignment="End"/>
                                 </Grid>
+                            </Border>
 
-                                <RadioButton IsChecked="{Binding IsQRISSelected}" 
-                                           GroupName="PaymentMethod"
-                                           Content="Select QRIS Payment"
-                                           FontSize="14"/>
+                            <!-- Quick Amount Buttons -->
+                            <Label Text="Quick Amount" 
+                                   FontSize="14"
+                                   TextColor="{DynamicResource SecondaryTextColor}"/>
 
-                                <StackLayout IsVisible="{Binding IsQRISSelected}" Spacing="10">
-                                    <!-- QR Code Placeholder -->
-                                    <Frame BackgroundColor="#F8F9FA" Padding="20" 
-                                           CornerRadius="10" HasShadow="False"
-                                           HorizontalOptions="Center">
-                                        <StackLayout Spacing="10" HorizontalOptions="Center">
-                                            <Label Text="[QR CODE]" FontSize="48" 
-                                                   FontFamily="Courier" TextColor="#9B59B6"
-                                                   HorizontalOptions="Center"/>
-                                            <Label Text="Scan with your e-wallet app" 
-                                                   FontSize="12" TextColor="#666"
-                                                   HorizontalTextAlignment="Center"/>
-                                            <Label Text="{Binding Total, StringFormat='Amount: Rp {0:N0}'}" 
-                                                   FontSize="14" FontAttributes="Bold"
-                                                   HorizontalTextAlignment="Center"/>
-                                        </StackLayout>
-                                    </Frame>
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                                <Button Grid.Column="0"
+                                        Text="Exact"
+                                        BackgroundColor="{DynamicResource PrimaryColor}"
+                                        TextColor="White"
+                                        CornerRadius="10"
+                                        Command="{Binding SetExactAmountCommand}"/>
+                                <Button Grid.Column="1"
+                                        Text="+50k"
+                                        BackgroundColor="{DynamicResource SecondaryColor}"
+                                        TextColor="White"
+                                        CornerRadius="10"
+                                        Command="{Binding AddQuickAmountCommand}"
+                                        CommandParameter="50000"/>
+                                <Button Grid.Column="2"
+                                        Text="+100k"
+                                        BackgroundColor="{DynamicResource SecondaryColor}"
+                                        TextColor="White"
+                                        CornerRadius="10"
+                                        Command="{Binding AddQuickAmountCommand}"
+                                        CommandParameter="100000"/>
+                            </Grid>
 
-                                    <Label Text="✓ GoPay  ✓ OVO  ✓ Dana  ✓ ShopeePay  ✓ LinkAja" 
-                                           FontSize="11" TextColor="#666" 
-                                           HorizontalTextAlignment="Center"/>
+                            <!-- Change Display -->
+                            <Border IsVisible="{Binding ShowChange}"
+                                   BackgroundColor="#E8F5E9"
+                                   StrokeThickness="0"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="15">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0" 
+                                           Text="Change:" 
+                                           FontSize="16" 
+                                           FontAttributes="Bold"
+                                           TextColor="#2E7D32"/>
+                                    <Label Grid.Column="1" 
+                                           Text="{Binding Change, StringFormat='Rp {0:N0}'}" 
+                                           FontSize="20" 
+                                           FontAttributes="Bold"
+                                           TextColor="#2E7D32"/>
+                                </Grid>
+                            </Border>
 
-                                    <Button Text="📷 Waiting for Payment..." 
-                                            BackgroundColor="#9B59B6" TextColor="White"
-                                            IsEnabled="False"/>
-                                </StackLayout>
-                            </StackLayout>
-                        </Frame>
+                            <!-- Insufficient Warning -->
+                            <Border IsVisible="{Binding ShowInsufficientWarning}"
+                                   BackgroundColor="#FFEBEE"
+                                   StrokeThickness="0"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="15">
+                                <Label Text="⚠️ Insufficient amount"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       TextColor="#C62828"
+                                       HorizontalOptions="Center"/>
+                            </Border>
+                        </StackLayout>
+
+                        <!-- Action Buttons -->
+                        <StackLayout Spacing="12" Margin="0,20,0,0">
+                            <Button Text="💰 Process Payment"
+                                    BackgroundColor="{DynamicResource SuccessColor}"
+                                    TextColor="White"
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    CornerRadius="12"
+                                    Padding="0,15"
+                                    Command="{Binding ProcessPaymentCommand}"
+                                    IsEnabled="{Binding CanProcessPayment}">
+                                <Button.Shadow>
+                                    <Shadow Brush="{DynamicResource SuccessColor}" 
+                                            Offset="0,4" 
+                                            Radius="12" 
+                                            Opacity="0.4"/>
+                                </Button.Shadow>
+                            </Button>
+
+                            <Button Text="Cancel"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{DynamicResource DangerColor}"
+                                    BorderColor="{DynamicResource DangerColor}"
+                                    BorderWidth="2"
+                                    CornerRadius="12"
+                                    Command="{Binding CancelCommand}"/>
+                        </StackLayout>
 
                     </StackLayout>
-                </Frame>
-            </Grid>
-        </ScrollView>
+                </ScrollView>
+            </Border>
 
-        <!-- Bottom Action Bar -->
-        <Frame Grid.Row="2" BackgroundColor="White" Padding="20" 
-               CornerRadius="0" HasShadow="True" BorderColor="#DDD" >
-            <Grid ColumnDefinitions="*,*,200" ColumnSpacing="15">
-                <Button Grid.Column="0" Text="← Back to Cart" 
-                        BackgroundColor="#95A5A6" TextColor="White"
-                        Command="{Binding BackToCartCommand}"
-                        FontSize="14" Padding="15,12"/>
-
-                <Label Grid.Column="1" VerticalOptions="Center">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Total: " FontSize="14" TextColor="#666"/>
-                            <Span Text="{Binding Total, StringFormat='Rp {0:N0}'}" 
-                                  FontSize="18" FontAttributes="Bold" TextColor="#27AE60"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-
-                <Button Grid.Column="2" Text="✓ Process Payment" 
-                        BackgroundColor="#27AE60" TextColor="White"
-                        Command="{Binding ProcessPaymentCommand}"
-                        FontSize="14" FontAttributes="Bold" Padding="15,12"
-                        IsEnabled="{Binding CanProcessPayment}"/>
-            </Grid>
-        </Frame>
+        </Grid>
 
         <!-- Loading Overlay -->
-        <Grid Grid.RowSpan="3" IsVisible="{Binding IsLoading}" 
+        <Grid Grid.Row="0" Grid.RowSpan="2"
+              IsVisible="{Binding IsLoading}"
               BackgroundColor="#80000000">
-            <ActivityIndicator IsRunning="True" Color="White" 
-                             WidthRequest="50" HeightRequest="50"/>
+            <Border WidthRequest="120"
+                   HeightRequest="120"
+                   BackgroundColor="{DynamicResource CardBackgroundColor}"
+                   StrokeThickness="0"
+                   StrokeShape="RoundRectangle 20">
+                <StackLayout Spacing="15" 
+                            HorizontalOptions="Center" 
+                            VerticalOptions="Center">
+                    <ActivityIndicator IsRunning="True"
+                                     Color="{DynamicResource PrimaryColor}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"/>
+                    <Label Text="Processing..."
+                           FontSize="14"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Border>
         </Grid>
+
     </Grid>
 </ContentPage>
