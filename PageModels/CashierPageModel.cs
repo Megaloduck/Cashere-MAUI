@@ -16,9 +16,12 @@ namespace Cashere.PageModels
     {
         private readonly ApiService _apiService;
         private ObservableCollection<MenuCategoryModel> _categories;
+        private ObservableCollection<MenuItemModel> _menuItems;
         private ObservableCollection<MenuItemModel> _filteredMenuItems;
         private ObservableCollection<CartItemModel> _cartItems;
         private MenuCategoryModel _selectedCategory;
+        private string _searchText;
+        private bool _isSearchActive;
         private decimal _cartSubtotal;
         private decimal _cartTax;
         private decimal _cartTotal;
@@ -28,6 +31,27 @@ namespace Cashere.PageModels
         {
             get => DateTime.Now.ToString("dddd, dd MMMM yyyy");
         }
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                PerformSearch();
+            }
+        }
+
+        public bool IsSearchActive
+        {
+            get => _isSearchActive;
+            set
+            {
+                _isSearchActive = value;
+                OnPropertyChanged();
+            }
+        }
+        public bool HasNoSearchResults => IsSearchActive && !FilteredMenuItems.Any();
 
         public ObservableCollection<MenuCategoryModel> Categories
         {
@@ -35,6 +59,11 @@ namespace Cashere.PageModels
             set { _categories = value; OnPropertyChanged(); }
         }
 
+        public ObservableCollection<MenuItemModel> MenuItems
+        {
+            get => _menuItems;
+            set { _menuItems = value; OnPropertyChanged(); }
+        }
         public ObservableCollection<MenuItemModel> FilteredMenuItems
         {
             get => _filteredMenuItems;
@@ -81,13 +110,20 @@ namespace Cashere.PageModels
         public ICommand ClearCartCommand { get; }
         public ICommand CheckoutCommand { get; }
         public ICommand OpenAdminPanelCommand { get; }
+        public ICommand ClearSearchCommand { get; }
+        public ICommand SearchCommand { get; }
+        public ICommand QuickSearchCommand { get; }
 
         public CashierPageModel()
         {
             _apiService = new ApiService();
             ToggleThemeCommand = new Command(OnToggleTheme);
 
+            ClearSearchCommand = new Command(OnClearSearch);
+            SearchCommand = new Command(PerformSearch);
+
             Categories = new ObservableCollection<MenuCategoryModel>();
+            MenuItems = new ObservableCollection<MenuItemModel>();
             FilteredMenuItems = new ObservableCollection<MenuItemModel>();
             CartItems = new ObservableCollection<CartItemModel>();
 
@@ -110,7 +146,66 @@ namespace Cashere.PageModels
         {
             await Shell.Current.GoToAsync("admin");
         }
-        
+        private void PerformSearch()
+        {
+            if (string.IsNullOrWhiteSpace(SearchText))
+            {
+                // Show all items from selected category
+                IsSearchActive = false;
+                LoadFilteredMenuItems();
+                return;
+            }
+
+            IsSearchActive = true;
+
+            var searchLower = SearchText.ToLower().Trim();
+
+            // Search across all menu items, ignoring category filter
+            var searchResults = MenuItems
+                .Where(item => 
+                    item.Name.ToLower().Contains(searchLower) ||
+                    item.Description.ToLower().Contains(searchLower) ||
+                    item.Category.ToLower().Contains(searchLower))
+                .ToList();
+
+            FilteredMenuItems.Clear();
+            foreach (var item in searchResults)
+            {
+                FilteredMenuItems.Add(item);
+            }
+
+            // Update UI message if no results
+            if (!FilteredMenuItems.Any())
+            {
+                OnPropertyChanged(nameof(HasNoSearchResults));
+            }
+        }
+
+        private void OnClearSearch()
+        {
+            SearchText = string.Empty;
+            IsSearchActive = false;
+            LoadFilteredMenuItems();
+        }
+        private void OnQuickSearch(string term)
+        {
+            SearchText = term;
+        }
+
+        private void LoadFilteredMenuItems()
+        {
+            FilteredMenuItems.Clear();
+
+            if (SelectedCategory == null)
+                return;
+
+            var itemsToShow = SelectedCategory.Items.OrderBy(i => i.DisplayOrder);
+
+            foreach (var item in itemsToShow)
+            {
+                FilteredMenuItems.Add(item);
+            }
+        }
 
         public async Task InitializeAsync()
         {
@@ -120,30 +215,40 @@ namespace Cashere.PageModels
 
                 var categories = await _apiService.GetMenuCategoriesAsync();
 
-                // 🧹 Fix: clear the collection to prevent duplication
+                // Clear collections to prevent duplication
                 Categories.Clear();
+                MenuItems.Clear();
 
                 foreach (var category in categories)
                 {
-                    Categories.Add(new MenuCategoryModel
+                    var categoryModel = new MenuCategoryModel
                     {
                         Id = category.Id,
                         Name = category.Name,
                         Description = category.Description,
                         DisplayOrder = category.DisplayOrder,
-                        Items = new ObservableCollection<MenuItemModel>(
-                            category.Items.Select(i => new MenuItemModel
-                            {
-                                Id = i.Id,
-                                Name = i.Name,
-                                Description = i.Description,
-                                Price = i.Price,
-                                IsTaxable = i.IsTaxable,
-                                DisplayOrder = i.DisplayOrder,
-                                Category = i.Name
-                            }).ToList()
-                        )
-                    });
+                        Items = new ObservableCollection<MenuItemModel>()
+                    };
+
+                    // Add items to category and to global MenuItems list
+                    foreach (var item in category.Items)
+                    {
+                        var menuItem = new MenuItemModel
+                        {
+                            Id = item.Id,
+                            Name = item.Name,
+                            Description = item.Description,
+                            Price = item.Price,
+                            IsTaxable = item.IsTaxable,
+                            DisplayOrder = item.DisplayOrder,
+                            Category = category.Name // Use category name, not item name
+                        };
+
+                        categoryModel.Items.Add(menuItem);
+                        MenuItems.Add(menuItem); // Add to global list for search
+                    }
+
+                    Categories.Add(categoryModel);
                 }
 
                 if (Categories.Any())
@@ -169,16 +274,24 @@ namespace Cashere.PageModels
         {
             if (category == null) return;
 
+            // Clear search when selecting category
+            if (IsSearchActive)
+            {
+                OnClearSearch();
+            }
+
+            // Deselect all categories
+            foreach (var cat in Categories)
+            {
+                cat.IsSelected = false;
+            }
+
+            // Select the chosen category
+            category.IsSelected = true;
             SelectedCategory = category;
 
-            // Update filtered items
-            FilteredMenuItems.Clear();
-            foreach (var item in category.Items.OrderBy(i => i.DisplayOrder))
-            {
-                FilteredMenuItems.Add(item);
-            }
+            LoadFilteredMenuItems();
         }
-
         private void OnAddToCart(MenuItemModel item)
         {
             if (item == null) return;
@@ -245,7 +358,6 @@ namespace Cashere.PageModels
             CartItems.Clear();
             RecalculateCartTotals();
         }
-
         private async void OnCheckout()
         {
             if (!CartItems.Any())

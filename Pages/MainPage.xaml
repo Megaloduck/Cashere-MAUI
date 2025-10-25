@@ -50,24 +50,46 @@
                 </HorizontalStackLayout>
 
                 <!-- Search Bar (Optional) -->
-                <Frame Grid.Column="1" 
-                       BackgroundColor="{DynamicResource CardBackgroundColor}"
-                       BorderColor="{DynamicResource BorderColor}"
-                       CornerRadius="25" 
-                       Padding="15,8" 
-                       HasShadow="False"
-                       Margin="20,0"
-                       MaximumWidthRequest="400">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                        <Label Grid.Column="0" Text="🔍" FontSize="16" 
-                               VerticalOptions="Center"/>
+                <Border Grid.Column="1" 
+                        BackgroundColor="{DynamicResource CardBackgroundColor}"
+                        Stroke="{DynamicResource BorderColor}"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 25"
+                        Padding="0"
+                        Margin="20,0"
+                        MaximumWidthRequest="500"
+                        HorizontalOptions="FillAndExpand">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" Padding="12,8">
+                        <!-- Search Icon -->
+                        <Label Grid.Column="0" 
+                               Text="🔍" 
+                               FontSize="18" 
+                               VerticalOptions="Center"
+                               Opacity="0.6"/>
+                        
+                        <!-- Search Entry -->
                         <Entry Grid.Column="1" 
-                               Placeholder="Search menu..." 
+                               Text="{Binding SearchText}"
+                               Placeholder="Search menu" 
                                PlaceholderColor="{DynamicResource TertiaryTextColor}"
                                TextColor="{DynamicResource PrimaryTextColor}"
-                               BackgroundColor="Transparent"/>
+                               BackgroundColor="Transparent"
+                               VerticalOptions="Center"
+                               ReturnCommand="{Binding SearchCommand}"/>
+                        
+                        <!-- Clear Button -->
+                        <Button Grid.Column="2" 
+                                Text="✕"
+                                FontSize="16"
+                                BackgroundColor="Transparent"
+                                TextColor="{DynamicResource SecondaryTextColor}"
+                                WidthRequest="32"
+                                HeightRequest="32"
+                                CornerRadius="16"
+                                IsVisible="{Binding IsSearchActive}"
+                                Command="{Binding ClearSearchCommand}"/>
                     </Grid>
-                </Frame>
+                </Border>
 
                 <!-- Theme Toggle -->
                 <Button Grid.Column="2" 
@@ -116,37 +138,77 @@
         </Border>
 
         <!-- Menu Section (Left Side) -->
-        <Grid Grid.Row="1" Grid.Column="0" Padding="15" RowDefinitions="Auto,*" RowSpacing="10">
+        <Grid Grid.Row="1" Grid.Column="0"
+      Padding="15"
+      RowDefinitions="Auto,Auto,*"
+      RowSpacing="10">
 
-            <!-- Enhanced Category Tabs -->
-            <ScrollView Grid.Row="0" Orientation="Horizontal" 
-                       HorizontalScrollBarVisibility="Never">
+            <!-- 🔍 Search Results Banner -->
+            <Border Grid.Row="0"
+            IsVisible="{Binding IsSearchActive}"
+            BackgroundColor="{DynamicResource BorderColor}"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 10"
+            Padding="15,10">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Grid.Column="0"
+                   FontSize="14"
+                   TextColor="White"
+                   VerticalOptions="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="🔍 Search results for: " />
+                                <Span Text="{Binding SearchText}" FontAttributes="Bold" />
+                                <Span Text=" (" />
+                                <Span Text="{Binding FilteredMenuItems.Count}" />
+                                <Span Text=" items found)" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+
+                    <Button Grid.Column="1"
+                    Text="Clear"
+                    FontSize="12"
+                    BackgroundColor= "{DynamicResource PrimaryColor}"
+                    TextColor="{DynamicResource PrimaryTextColor}"
+                    CornerRadius="5"
+                    Padding="7"
+                    Command="{Binding ClearSearchCommand}" />
+                </Grid>
+            </Border>
+
+            <!-- 🧭 Enhanced Category Tabs -->
+            <ScrollView Grid.Row="1"
+                Orientation="Horizontal"
+                HorizontalScrollBarVisibility="Never">
+
                 <HorizontalStackLayout Spacing="12" Padding="5">
-                    <CollectionView ItemsSource="{Binding Categories}" 
-                                    SelectionMode="Single" 
-                                    SelectionChangedCommand="{Binding SelectCategoryCommand}"
-                                    SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+                    <CollectionView ItemsSource="{Binding Categories}"
+                            SelectionMode="Single"
+                            SelectionChangedCommand="{Binding SelectCategoryCommand}"
+                            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
                         <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12"/>
+                            <LinearItemsLayout Orientation="Horizontal"
+                                       ItemSpacing="12" />
                         </CollectionView.ItemsLayout>
+
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <Border StrokeThickness="0"
-                                       BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}, 
-                                                      ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
-                                       StrokeShape="RoundRectangle 20"
-                                       Padding="20,10">
+                                BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
+                                StrokeShape="RoundRectangle 20"
+                                Padding="10">
                                     <Border.Shadow>
-                                        <Shadow Brush="{DynamicResource ShadowColor}" 
-                                                Offset="0,2" 
-                                                Radius="8" 
-                                                Opacity="0.2"/>
+                                        <Shadow Brush="{DynamicResource ShadowColor}"
+                                        Offset="0,2"
+                                        Radius="8"
+                                        Opacity="0.2" />
                                     </Border.Shadow>
-                                    <Label Text="{Binding Name}" 
-                                           FontSize="14" 
-                                           FontAttributes="Bold"
-                                           TextColor="{DynamicResource PrimaryTextColor}" 
-                                          />
+
+                                    <Label Text="{Binding Name}"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}" />
                                 </Border>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
@@ -154,114 +216,120 @@
                 </HorizontalStackLayout>
             </ScrollView>
 
-            <!-- Enhanced Menu Items Grid -->
-            <ScrollView Grid.Row="1">
-                <CollectionView ItemsSource="{Binding FilteredMenuItems}" 
-                              SelectionMode="Single" 
-                              SelectionChanged="OnMenuItemSelected"
-                              Margin="0,5">
-                    <CollectionView.ItemsLayout>
-                        <GridItemsLayout Orientation="Vertical" 
-                                        HorizontalItemSpacing="15" 
-                                        VerticalItemSpacing="15" 
-                                        Span="3"/>
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Border StrokeThickness="0"
-                                   BackgroundColor="{DynamicResource CardBackgroundColor}"
-                                   StrokeShape="RoundRectangle 15"
-                                   Padding="0">
-                                <Border.Shadow>
-                                    <Shadow Brush="{DynamicResource ShadowColor}" 
-                                            Offset="0,4" 
-                                            Radius="12" 
-                                            Opacity="0.15"/>
-                                </Border.Shadow>
+            <!-- 🍽️ Menu Items Grid -->
+            <CollectionView Grid.Row="2"
+                    ItemsSource="{Binding FilteredMenuItems}"
+                    SelectionMode="Single"
+                    SelectionChanged="OnMenuItemSelected"
+                    Margin="0,5">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical"
+                             HorizontalItemSpacing="15"
+                             VerticalItemSpacing="15"
+                             Span="3" />
+                </CollectionView.ItemsLayout>
 
-                                <Grid RowDefinitions="180,*" RowSpacing="0">
-                                    <!-- Image Placeholder -->
-                                    <Border Grid.Row="0" 
-                                           BackgroundColor="{DynamicResource PrimaryColor}"
-                                           StrokeThickness="0"
-                                           StrokeShape="RoundRectangle 15,15,0,0">
-                                        <Grid>
-                                            <Label Text="☕" 
-                                                   FontSize="60" 
-                                                   HorizontalOptions="Center" 
-                                                   VerticalOptions="Center"
-                                                   Opacity="0.3"
-                                                   TextColor="White"/>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border StrokeThickness="0"
+                        BackgroundColor="{DynamicResource CardBackgroundColor}"
+                        StrokeShape="RoundRectangle 15"
+                        Padding="0">
+                            <Border.Shadow>
+                                <Shadow Brush="{DynamicResource ShadowColor}"
+                                Offset="0,4"
+                                Radius="12"
+                                Opacity="0.15" />
+                            </Border.Shadow>
 
-                                            <!-- Category Badge -->
-                                            <Frame CornerRadius="12" 
-                                                   BackgroundColor="{DynamicResource BadgeBackgroundColor}" 
-                                                   Padding="8,4" 
-                                                   HasShadow="False" 
-                                                   HorizontalOptions="Start"
-                                                   VerticalOptions="Start"
-                                                   Margin="12">
-                                                <Label Text="{Binding Category}" 
-                                                       FontSize="10" 
-                                                       FontAttributes="Bold" 
-                                                       TextColor="{DynamicResource BadgeTextColor}"/>
-                                            </Frame>
-                                        </Grid>
-                                    </Border>
+                            <Grid RowDefinitions="180,*"
+                          RowSpacing="0">
 
-                                    <!-- Item Details -->
-                                    <StackLayout Grid.Row="1" Padding="15" Spacing="8">
-                                        <!-- Item Name -->
-                                        <Label Text="{Binding Name}" 
-                                               FontSize="15" 
-                                               FontAttributes="Bold" 
-                                               LineBreakMode="TailTruncation"
-                                               TextColor="{DynamicResource PrimaryTextColor}"/>
+                                <!-- 🖼️ Image Placeholder -->
+                                <Border Grid.Row="0"
+                                BackgroundColor="{DynamicResource PrimaryColor}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 15,15,0,0">
+                                    <Grid>
+                                        <Label Text="☕"
+                                       FontSize="60"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Opacity="0.3"
+                                       TextColor="White" />
 
-                                        <!-- Item Description -->
-                                        <Label Text="{Binding Description}" 
-                                               FontSize="12" 
-                                               TextColor="{DynamicResource SecondaryTextColor}" 
-                                               LineBreakMode="TailTruncation"
-                                               MaxLines="2"/>
+                                        <!-- 🏷️ Category Badge -->
+                                        <Frame CornerRadius="12"
+                                       BackgroundColor="{DynamicResource BadgeBackgroundColor}"
+                                       Padding="8,4"
+                                       HasShadow="False"
+                                       HorizontalOptions="Start"
+                                       VerticalOptions="Start"
+                                       Margin="12">
+                                            <Label Text="{Binding Category}"
+                                           FontSize="10"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource BadgeTextColor}" />
+                                        </Frame>
+                                    </Grid>
+                                </Border>
 
-                                        <!-- Price & Add Button -->
-                                        <Grid ColumnDefinitions="*,Auto" 
-                                              Margin="0,8,0,0"
-                                              ColumnSpacing="10">
-                                            <Label Grid.Column="0"
-                                                   Text="{Binding Price, StringFormat='Rp {0:N0}'}" 
-                                                   FontSize="18" 
-                                                   FontAttributes="Bold" 
-                                                   TextColor="{DynamicResource SuccessColor}"
-                                                   VerticalOptions="Center"/>
+                                <!-- 🧾 Item Details -->
+                                <StackLayout Grid.Row="1"
+                                     Padding="15"
+                                     Spacing="8">
 
-                                            <Button Grid.Column="1"
-                                                    Text="+" 
-                                                    BackgroundColor="{DynamicResource PrimaryColor}" 
-                                                    TextColor="White" 
-                                                    CornerRadius="20" 
+                                    <!-- Item Name -->
+                                    <Label Text="{Binding Name}"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   LineBreakMode="TailTruncation"
+                                   TextColor="{DynamicResource PrimaryTextColor}" />
 
-                                                    FontSize="20"
-                                                    FontAttributes="Bold"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, 
-                                                              Path=BindingContext.AddToCartCommand}"
-                                                    CommandParameter="{Binding .}">
-                                                <Button.Shadow>
-                                                    <Shadow Brush="{DynamicResource ShadowColor}" 
-                                                            Offset="0,2" 
-                                                            Radius="8" 
-                                                            Opacity="0.3"/>
-                                                </Button.Shadow>
-                                            </Button>
-                                        </Grid>
-                                    </StackLayout>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </ScrollView>
+                                    <!-- Item Description -->
+                                    <Label Text="{Binding Description}"
+                                   FontSize="12"
+                                   TextColor="{DynamicResource SecondaryTextColor}"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2" />
+
+                                    <!-- 💰 Price & ➕ Add Button -->
+                                    <Grid ColumnDefinitions="*,Auto"
+                                  Margin="0,8,0,0"
+                                  ColumnSpacing="10">
+                                        <Label Grid.Column="0"
+                                       Text="{Binding Price, StringFormat='Rp {0:N0}'}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource SuccessColor}"
+                                       VerticalOptions="Center" />
+
+                                        <Button Grid.Column="1"
+                                        Text="+"
+                                        BackgroundColor="{DynamicResource PrimaryColor}"
+                                        TextColor="White"
+                                        CornerRadius="20"
+                                        FontSize="20"
+                                        FontAttributes="Bold"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.AddToCartCommand}"
+                                        CommandParameter="{Binding .}">
+                                            <Button.Shadow>
+                                                <Shadow Brush="{DynamicResource ShadowColor}"
+                                                Offset="0,2"
+                                                Radius="8"
+                                                Opacity="0.3" />
+                                            </Button.Shadow>
+                                        </Button>
+                                    </Grid>
+                                </StackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            
+
         </Grid>
 
         <!-- Enhanced Shopping Cart (Right Side) -->
