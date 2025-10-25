@@ -21,8 +21,11 @@ namespace Cashere.PageModels
         private decimal _total;
         private bool _isCashSelected = true;
         private bool _isQRISSelected;
-        private decimal _cashAmountPaid;
+        private string _cashAmountPaid;
         private decimal _change;
+        private bool _showChange;
+        private bool _showInsufficientWarning;
+        private bool _canProcessPayment;
 
         public ObservableCollection<CartItemModel> CartItems
         {
@@ -51,29 +54,43 @@ namespace Cashere.PageModels
         public decimal Total
         {
             get => _total;
-            set { _total = value; OnPropertyChanged(); }
+            set { _total = value; OnPropertyChanged(); UpdateCanProcessPayment(); }
         }
 
         public bool IsCashSelected
         {
             get => _isCashSelected;
-            set { _isCashSelected = value; _isQRISSelected = !value; OnPropertyChanged(); OnPropertyChanged(nameof(IsQRISSelected)); }
+            set
+            {
+                _isCashSelected = value;
+                if (value) _isQRISSelected = false;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsQRISSelected));
+                UpdateCanProcessPayment();
+            }
         }
 
         public bool IsQRISSelected
         {
             get => _isQRISSelected;
-            set { _isQRISSelected = value; _isCashSelected = !value; OnPropertyChanged(); OnPropertyChanged(nameof(IsCashSelected)); }
+            set
+            {
+                _isQRISSelected = value;
+                if (value) _isCashSelected = false;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsCashSelected));
+                UpdateCanProcessPayment();
+            }
         }
 
-        public decimal CashAmountPaid
+        public string CashAmountPaid
         {
             get => _cashAmountPaid;
             set
             {
                 _cashAmountPaid = value;
-                Change = value - Total;
                 OnPropertyChanged();
+                CalculateChange();
             }
         }
 
@@ -83,28 +100,101 @@ namespace Cashere.PageModels
             set { _change = value; OnPropertyChanged(); }
         }
 
+        public bool ShowChange
+        {
+            get => _showChange;
+            set { _showChange = value; OnPropertyChanged(); }
+        }
+
+        public bool ShowInsufficientWarning
+        {
+            get => _showInsufficientWarning;
+            set { _showInsufficientWarning = value; OnPropertyChanged(); }
+        }
+
+        public bool CanProcessPayment
+        {
+            get => _canProcessPayment;
+            set { _canProcessPayment = value; OnPropertyChanged(); }
+        }
+
         public ICommand ProcessPaymentCommand { get; }
         public ICommand CancelCommand { get; }
+        public ICommand BackToCartCommand { get; }
+        public ICommand SetExactAmountCommand { get; }
+        public ICommand AddQuickAmountCommand { get; }
+        public ICommand PreviewReceiptCommand { get; }
 
         public CheckoutPageModel()
         {
             _apiService = new ApiService();
             CartItems = new ObservableCollection<CartItemModel>();
+
             ProcessPaymentCommand = new Command(OnProcessPayment);
             CancelCommand = new Command(OnCancel);
+            BackToCartCommand = new Command(OnBackToCart);
+            SetExactAmountCommand = new Command(OnSetExactAmount);
+            AddQuickAmountCommand = new Command<string>(OnAddQuickAmount);
+            PreviewReceiptCommand = new Command(OnPreviewReceipt);
         }
 
-        public async void InitializeAsync()
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            // Receive cart data from cashier page
+            if (query.ContainsKey("cartItems"))
+            {
+                var items = query["cartItems"] as List<CartItemModel>;
+                if (items != null)
+                {
+                    CartItems.Clear();
+                    foreach (var item in items)
+                    {
+                        CartItems.Add(item);
+                    }
+                }
+            }
+        }
+
+        public async Task InitializeAsync()
         {
             try
             {
                 IsLoading = true;
 
-                // Get cart data from main page (passed via navigation or static)
-                // For now, we'll use a static property or messaging service
-                // You'll need to implement passing cart data here
+                // If cart is empty, get from static storage or navigation
+                if (!CartItems.Any())
+                {
+                    // TODO: Get cart from messaging service or static storage
+                    // For now, create a test order
+                }
 
-                // Create order first
+                // Calculate totals
+                Subtotal = CartItems.Sum(ci => ci.SubtotalAmount);
+                Tax = CartItems.Sum(ci => ci.TaxAmount);
+                Total = Subtotal + Tax;
+
+                // Create order
+                await CreateOrderAsync();
+
+                // Set default cash amount
+                CashAmountPaid = Total.ToString("F0");
+                CalculateChange();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current!.MainPage!.DisplayAlert("Error",
+                    $"Failed to initialize checkout: {ex.Message}", "OK");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async Task CreateOrderAsync()
+        {
+            try
+            {
                 var orderRequest = new CreateOrderRequest
                 {
                     Items = CartItems.Select(ci => new CreateOrderItemRequest
@@ -116,45 +206,126 @@ namespace Cashere.PageModels
                 };
 
                 var orderResponse = await _apiService.CreateOrderAsync(orderRequest);
+
                 OrderNumber = orderResponse.OrderNumber;
                 _orderId = orderResponse.Id;
                 Subtotal = orderResponse.SubtotalAmount;
                 Tax = orderResponse.TaxAmount;
                 Total = orderResponse.TotalAmount;
-                CashAmountPaid = Total; // Default to exact amount
             }
             catch (Exception ex)
             {
-                await Application.Current!.MainPage!.DisplayAlert("Error", $"Failed to create order: {ex.Message}", "OK");
+                throw new Exception($"Failed to create order: {ex.Message}");
             }
-            finally
+        }
+
+        private void CalculateChange()
+        {
+            if (decimal.TryParse(CashAmountPaid, out decimal paid))
             {
-                IsLoading = false;
+                Change = paid - Total;
+                ShowChange = Change >= 0;
+                ShowInsufficientWarning = Change < 0;
+                UpdateCanProcessPayment();
+            }
+            else
+            {
+                ShowChange = false;
+                ShowInsufficientWarning = false;
+                UpdateCanProcessPayment();
+            }
+        }
+
+        private void UpdateCanProcessPayment()
+        {
+            if (IsQRISSelected)
+            {
+                CanProcessPayment = true; // QRIS always ready
+            }
+            else if (IsCashSelected)
+            {
+                if (decimal.TryParse(CashAmountPaid, out decimal paid))
+                {
+                    CanProcessPayment = paid >= Total;
+                }
+                else
+                {
+                    CanProcessPayment = false;
+                }
+            }
+            else
+            {
+                CanProcessPayment = false;
+            }
+        }
+
+        private void OnSetExactAmount()
+        {
+            CashAmountPaid = Total.ToString("F0");
+        }
+
+        private void OnAddQuickAmount(string amountStr)
+        {
+            if (int.TryParse(amountStr, out int quickAmount))
+            {
+                var currentAmount = decimal.TryParse(CashAmountPaid, out decimal current) ? current : 0;
+
+                // Round up to nearest amount
+                var roundedTotal = Math.Ceiling(Total / quickAmount) * quickAmount;
+                CashAmountPaid = roundedTotal.ToString("F0");
             }
         }
 
         private async void OnProcessPayment()
         {
+            if (!CanProcessPayment)
+            {
+                await Application.Current!.MainPage!.DisplayAlert("Invalid Payment",
+                    "Please check your payment amount", "OK");
+                return;
+            }
+
             try
             {
                 IsLoading = true;
 
-                // Validate payment
-                if (IsCashSelected && CashAmountPaid < Total)
+                var paymentRequest = new ProcessPaymentRequest
                 {
-                    await Application.Current!.MainPage!.DisplayAlert("Error", "Insufficient cash amount", "OK");
-                    return;
+                    OrderId = _orderId,
+                    PaymentMethod = IsCashSelected ? "Cash" : "QRIS",
+                    AmountPaid = IsCashSelected
+                        ? decimal.Parse(CashAmountPaid)
+                        : Total
+                };
+
+                var paymentResponse = await _apiService.ProcessPaymentAsync(paymentRequest);
+
+                // Show success message
+                var message = IsCashSelected
+                    ? $"Payment Successful!\n\nOrder: {paymentResponse.OrderNumber}\nTotal: Rp {paymentResponse.OrderTotal:N0}\nPaid: Rp {paymentResponse.AmountPaid:N0}\nChange: Rp {paymentResponse.ChangeAmount:N0}"
+                    : $"QRIS Payment Successful!\n\nOrder: {paymentResponse.OrderNumber}\nTotal: Rp {paymentResponse.OrderTotal:N0}";
+
+                await Application.Current!.MainPage!.DisplayAlert("✓ Success", message, "OK");
+
+                // Print receipt (optional)
+                var printReceipt = await Application.Current!.MainPage!.DisplayAlert(
+                    "Print Receipt?",
+                    "Do you want to print the receipt?",
+                    "Yes",
+                    "No");
+
+                if (printReceipt)
+                {
+                    await PrintReceiptAsync(paymentResponse);
                 }
 
-                // Process payment via API
-                // TODO: Call payment API endpoint
-
-                await Application.Current!.MainPage!.DisplayAlert("Success", "Payment processed successfully!", "OK");
+                // Go back to main page and clear cart
                 await Shell.Current.GoToAsync("//main");
             }
             catch (Exception ex)
             {
-                await Application.Current!.MainPage!.DisplayAlert("Error", $"Payment failed: {ex.Message}", "OK");
+                await Application.Current!.MainPage!.DisplayAlert("Payment Failed",
+                    ex.Message, "OK");
             }
             finally
             {
@@ -162,7 +333,122 @@ namespace Cashere.PageModels
             }
         }
 
+        private async Task PrintReceiptAsync(PaymentResponse payment)
+        {
+            try
+            {
+                // TODO: Implement actual printer integration
+                // For now, just show a preview
+                var receipt = GenerateReceiptText(payment);
+
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Receipt",
+                    receipt,
+                    "OK");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Print error: {ex.Message}");
+            }
+        }
+
+        private string GenerateReceiptText(PaymentResponse payment)
+        {
+            var receipt = "================================\n";
+            receipt += "         CAFE POS RECEIPT        \n";
+            receipt += "================================\n\n";
+            receipt += $"Order #: {payment.OrderNumber}\n";
+            receipt += $"Date: {payment.TransactionDate:dd/MM/yyyy HH:mm}\n";
+            receipt += $"Payment: {payment.PaymentMethod}\n\n";
+            receipt += "--------------------------------\n";
+            receipt += "Items:\n";
+
+            foreach (var item in CartItems)
+            {
+                receipt += $"{item.Quantity}x {item.ItemName}\n";
+                receipt += $"   @ Rp {item.UnitPrice:N0} = Rp {item.SubtotalAmount:N0}\n";
+            }
+
+            receipt += "--------------------------------\n";
+            receipt += $"Subtotal:  Rp {payment.OrderTotal - payment.TaxAmount:N0}\n";
+            receipt += $"Tax (10%): Rp {payment.TaxAmount:N0}\n";
+            receipt += "================================\n";
+            receipt += $"TOTAL:     Rp {payment.OrderTotal:N0}\n";
+
+            if (payment.PaymentMethod == "Cash")
+            {
+                receipt += $"Paid:      Rp {payment.AmountPaid:N0}\n";
+                receipt += $"Change:    Rp {payment.ChangeAmount:N0}\n";
+            }
+
+            receipt += "================================\n";
+            receipt += "\n   Thank you for your order!\n";
+            receipt += "================================\n";
+
+            return receipt;
+        }
+
+        private async void OnPreviewReceipt()
+        {
+            var tempPayment = new PaymentResponse
+            {
+                OrderNumber = OrderNumber,
+                PaymentMethod = IsCashSelected ? "Cash" : "QRIS",
+                OrderTotal = Total,
+                TaxAmount = Tax,
+                AmountPaid = IsCashSelected ? decimal.Parse(CashAmountPaid ?? "0") : Total,
+                ChangeAmount = IsCashSelected ? Change : 0,
+                TransactionDate = DateTime.Now
+            };
+
+            await PrintReceiptAsync(tempPayment);
+        }
+
+        private async void OnCheckout()
+        {
+            if (!CartItems.Any())
+            {
+                await Application.Current!.MainPage!.DisplayAlert("Empty Cart",
+                    "Please add items to cart first", "OK");
+                return;
+            }
+
+            var navigationParameter = new Dictionary<string, object>
+    {
+        { "cartItems", CartItems.ToList() }
+    };
+
+            await Shell.Current.GoToAsync("checkout", navigationParameter);
+        }
+
         private async void OnCancel()
+        {
+            bool confirm = await Application.Current!.MainPage!.DisplayAlert(
+                "Cancel Checkout?",
+                "Do you want to cancel this order?",
+                "Yes, Cancel",
+                "No");
+
+            if (confirm)
+            {
+                try
+                {
+                    // Cancel the order
+                    if (_orderId > 0)
+                    {
+                        await _apiService.CancelOrderAsync(_orderId);
+                    }
+                }
+                catch
+                {
+                    // Ignore cancellation errors
+                }
+
+                await Shell.Current.GoToAsync("//main");
+            }
+        }
+
+        private async void OnBackToCart()
         {
             await Shell.Current.GoToAsync("..");
         }

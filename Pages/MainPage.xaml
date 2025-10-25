@@ -15,7 +15,7 @@
 
         <!-- Header -->
         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto"
-              BackgroundColor="#2C3E50" Padding="15,0">
+              BackgroundColor="#2C3E50" Padding="15,5">
             <Label Text="☕ Cashere" 
                    FontSize="24" FontAttributes="Bold" 
                    TextColor="White" VerticalOptions="Center"/>
@@ -101,14 +101,13 @@
 
         <!-- Shopping Cart (Right Side) -->
         <Border Grid.Row="1"
-        Grid.Column="1"
-        Stroke="#CCCCCC"
-        StrokeThickness="1"
-        BackgroundColor="White"
-        Padding="15"   >
+                Grid.Column="1"
+                Stroke="#CCCCCC"
+                StrokeThickness="1"
+                BackgroundColor="White"
+                Padding="15"   >
 
-
-            <Grid RowDefinitions="40,*,200">
+            <Grid RowDefinitions="40,*,Auto">
 
                 <!-- Cart Header -->
                 <Label Grid.Row="0" Text="🛒 Shopping Cart" FontSize="18"
