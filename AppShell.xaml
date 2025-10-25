@@ -15,7 +15,7 @@
         Route="login" />
 
     <ShellContent
-        Title="Cashier"
+
         ContentTemplate="{DataTemplate pages:MainPage}"
         Route="main" />
 

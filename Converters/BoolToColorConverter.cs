@@ -11,20 +11,48 @@ namespace Cashere.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool boolValue && parameter is string colors)
+            if (value is bool boolValue && parameter is string colorPair)
             {
-                var colorArray = colors.Split('|');
-                if (colorArray.Length == 2)
+                var colors = colorPair.Split('|');
+                if (colors.Length == 2)
                 {
-                    return Color.FromArgb(boolValue ? colorArray[0] : colorArray[1]);
+                    var selectedColor = colors[0].Trim();
+                    var unselectedColor = colors[1].Trim();
+
+                    // Check if using dynamic resources
+                    if (selectedColor.StartsWith("Dynamic:"))
+                    {
+                        var resourceKey = selectedColor.Replace("Dynamic:", "");
+                        selectedColor = GetDynamicResource(resourceKey);
+                    }
+
+                    if (unselectedColor.StartsWith("Dynamic:"))
+                    {
+                        var resourceKey = unselectedColor.Replace("Dynamic:", "");
+                        unselectedColor = GetDynamicResource(resourceKey);
+                    }
+
+                    return Color.FromArgb(boolValue ? selectedColor : unselectedColor);
                 }
             }
-            return Colors.White;
+            return Colors.Transparent;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private string GetDynamicResource(string key)
+        {
+            if (Application.Current.Resources.TryGetValue(key, out var resource))
+            {
+                if (resource is Color color)
+                {
+                    return color.ToArgbHex();
+                }
+            }
+            return "#000000"; // Fallback
         }
     }
 }

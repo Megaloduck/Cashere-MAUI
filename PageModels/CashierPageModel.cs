@@ -24,6 +24,11 @@ namespace Cashere.PageModels
         private decimal _cartTotal;
         private decimal _taxRate = 0.10m;
 
+        public string Today
+        {
+            get => DateTime.Now.ToString("dddd, dd MMMM yyyy");
+        }
+
         public ObservableCollection<MenuCategoryModel> Categories
         {
             get => _categories;
@@ -67,6 +72,7 @@ namespace Cashere.PageModels
         }
 
         // Commands
+        public ICommand ToggleThemeCommand { get; }
         public ICommand SelectCategoryCommand { get; }
         public ICommand AddToCartCommand { get; }
         public ICommand RemoveFromCartCommand { get; }
@@ -79,6 +85,8 @@ namespace Cashere.PageModels
         public CashierPageModel()
         {
             _apiService = new ApiService();
+            ToggleThemeCommand = new Command(OnToggleTheme);
+
             Categories = new ObservableCollection<MenuCategoryModel>();
             FilteredMenuItems = new ObservableCollection<MenuItemModel>();
             CartItems = new ObservableCollection<CartItemModel>();
@@ -93,10 +101,16 @@ namespace Cashere.PageModels
             OpenAdminPanelCommand = new Command(OnOpenAdminPanel);
         }
 
+        private void OnToggleTheme()
+        {
+            ThemeService.Instance.IsDarkMode = !ThemeService.Instance.IsDarkMode;
+        }
+
         private async void OnOpenAdminPanel()
         {
             await Shell.Current.GoToAsync("admin");
         }
+        
 
         public async Task InitializeAsync()
         {

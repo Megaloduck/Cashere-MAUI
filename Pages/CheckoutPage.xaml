@@ -23,7 +23,7 @@
 
         <!-- Content -->
         <ScrollView Grid.Row="1" Padding="20">
-            <Grid ColumnDefinitions="*,400" ColumnSpacing="20">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="20">
 
                 <!-- Left: Order Summary -->
                 <Frame Grid.Column="0" BackgroundColor="White" Padding="20" 

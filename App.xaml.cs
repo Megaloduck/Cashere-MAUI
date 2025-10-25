@@ -6,6 +6,9 @@
         {
             InitializeComponent();
 
+            // Initialize theme service
+            _ = ThemeService.Instance;
+
             MainPage = new AppShell();
         }
     }

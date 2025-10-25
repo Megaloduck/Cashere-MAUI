@@ -1,5 +1,6 @@
 ﻿using Cashere.Models;
 using Cashere.PageModels;
+using Cashere.Services; // ✅ Import ThemeService namespace
 
 namespace Cashere.Pages
 {
@@ -12,25 +13,38 @@ namespace Cashere.Pages
             InitializeComponent();
             _pageModel = new CashierPageModel();
             BindingContext = _pageModel;
+            UpdateThemeIcon();
         }
 
         protected override async void OnAppearing()
         {
             base.OnAppearing();
             await _pageModel.InitializeAsync();
-
+            UpdateThemeIcon();
         }
 
-        private async void OnMenuItemSelected(object sender, SelectionChangedEventArgs e)
+        private void OnThemeToggleClicked(object sender, EventArgs e)
         {
-            if (e.CurrentSelection.FirstOrDefault() is MenuItemModel item)
+            ThemeService.Instance.IsDarkMode = !ThemeService.Instance.IsDarkMode;
+            UpdateThemeIcon();
+        }
+
+        private void UpdateThemeIcon()
+        {
+            if (ThemeToggleButton != null)
             {
-                _pageModel.AddToCartCommand.Execute(item);
-                // Deselect after adding
-                ((CollectionView)sender).SelectedItem = null;
+                ThemeToggleButton.Text = ThemeService.Instance.IsDarkMode ? "☀️" : "🌙";
             }
         }
 
+        private void OnMenuItemSelected(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.CurrentSelection.FirstOrDefault() != null)
+            {
+                ((CollectionView)sender).SelectedItem = null;
+            }
+        }
+        
         private void OnCartItemQuantityChanged(object sender, TextChangedEventArgs e)
         {
             if (sender is Entry entry && entry.BindingContext is CartItemModel cartItem)
@@ -43,5 +57,7 @@ namespace Cashere.Pages
                 }
             }
         }
+
+ 
     }
 }

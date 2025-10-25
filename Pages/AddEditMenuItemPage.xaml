@@ -51,7 +51,7 @@
                                 ItemDisplayBinding="{Binding Name}"
                                 SelectedItem="{Binding SelectedCategory}"
                                 Title="Select a category"
-                                FontSize="14"/>
+                                FontSize="14" TextColor="Black"/>
                         <Label Text="Choose which category this item belongs to" 
                                FontSize="10" TextColor="#999"/>
                     </StackLayout>

@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Cashere"
+             xmlns:converters="clr-namespace:Cashere.Converters"
              x:Class="Cashere.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -10,7 +11,12 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary Source="Resources/Styles/AppStyles.xaml" />
+                <ResourceDictionary Source="Resources/Themes/LightTheme.xaml" />
+                <ResourceDictionary Source="Resources/Themes/DarkTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
