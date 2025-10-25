@@ -2,270 +2,776 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.AdminPanelPage"
-             BackgroundColor="#F5F5F5">
-    
-  <Grid RowDefinitions="auto,*" Padding="0">
-        
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="0">
+
         <!-- Header -->
-        <Grid Grid.Row="0" BackgroundColor="#2C3E50" Padding="20,10">
-            <Grid ColumnDefinitions="*,Auto,5,Auto" >
-                <Label Grid.Column="0" Text="⚙️ Admin Panel" FontSize="24" 
-                       FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
-                <Button  Grid.Column="1" Text="📊 Finance Dashboard" 
-                        BackgroundColor="#3498DB" TextColor="White"
+        <Border Grid.Row="0" 
+                BackgroundColor="{DynamicResource HeaderBackgroundColor}"
+                StrokeThickness="0"
+                Padding="20,15">
+            <Border.Shadow>
+                <Shadow Brush="{DynamicResource ShadowColor}" 
+                        Offset="0,4" 
+                        Radius="10" 
+                        Opacity="0.3"/>
+            </Border.Shadow>
+
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="15">
+                <Frame Grid.Column="0" 
+                       WidthRequest="45" 
+                       HeightRequest="45" 
+                       CornerRadius="23" 
+                       Padding="0" 
+                       BackgroundColor="{DynamicResource AccentColor}"
+                       HasShadow="False">
+                    <Label Text="⚙️" 
+                           FontSize="24" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center"/>
+                </Frame>
+
+                <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label Text="Admin Panel" 
+                           FontSize="22" 
+                           FontAttributes="Bold" 
+                           TextColor="White"/>
+                    <Label Text="Manage your restaurant settings" 
+                           FontSize="12" 
+                           TextColor="#CCCCCC"/>
+                </StackLayout>
+
+                <Button Grid.Column="2" 
+                        Text="📊 Reports" 
+                        BackgroundColor="{DynamicResource PrimaryColor}" 
+                        TextColor="White"
+                        CornerRadius="20"
+                        Padding="20,8"
+                        FontSize="14"
                         Command="{Binding OpenDashboardCommand}"/>
-                <Button Grid.Column="3" Text="← Back to Cashier" 
-                        BackgroundColor="#3498DB" TextColor="White" 
+
+                <Button Grid.Column="3" 
+                        Text="← Back" 
+                        BackgroundColor="{DynamicResource SecondaryColor}" 
+                        TextColor="White" 
+                        CornerRadius="20"
+                        Padding="20,8"
+                        FontSize="14"
                         Command="{Binding BackToCashierCommand}"/>
             </Grid>
-        </Grid>
+        </Border>
 
-        <!-- Tab View -->
-        <Grid Grid.Row="1">
-            <StackLayout>
-                <!-- Tab Buttons -->
-                <ScrollView Orientation="Horizontal" Padding="10,10,10,0">
-                    <HorizontalStackLayout Spacing="10">
-                        <Button Text="📊 Dashboard" 
-                                BackgroundColor="{Binding IsDashboardTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="Dashboard" TextColor="DarkSalmon"/>
-                        <Button Text="📁 Categories" 
-                                BackgroundColor="{Binding IsCategoriesTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="Categories" TextColor="DarkSalmon"/>
-                        <Button Text="🍽️ Menu Items" 
-                                BackgroundColor="{Binding IsMenuItemsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="MenuItems" TextColor="DarkSalmon"/>
-                        <Button Text="💰 Tax Settings" 
-                                BackgroundColor="{Binding IsTaxSettingsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="TaxSettings" TextColor="DarkSalmon"/>
-                        <Button Text="👥 Users" 
-                                BackgroundColor="{Binding IsUsersTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#3498DB|#95A5A6'}"
-                                Command="{Binding SelectTabCommand}" CommandParameter="Users" TextColor="DarkSalmon"/>
-                    </HorizontalStackLayout>
-                </ScrollView>
+        <!-- Tab Buttons -->
+        <ScrollView Grid.Row="1" 
+                   Orientation="Horizontal" 
+                   Padding="15,15,15,0"
+                   HorizontalScrollBarVisibility="Never">
+            <HorizontalStackLayout Spacing="10">
+                <Border StrokeThickness="0"
+                       BackgroundColor="{Binding IsDashboardTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
+                       StrokeShape="RoundRectangle 20"
+                       Padding="20,10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}" 
+                                             CommandParameter="Dashboard"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="📊 Dashboard" 
+                           FontSize="14" 
+                           FontAttributes="Bold"
+                           TextColor="{Binding IsDashboardTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#FFFFFF|Dynamic:PrimaryTextColor'}"/>
+                </Border>
 
-                <!-- Tab Content -->
-                <ScrollView Orientation="Vertical" Padding="20">
-                    <VerticalStackLayout Spacing="5">
+                <Border StrokeThickness="0"
+                       BackgroundColor="{Binding IsCategoriesTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
+                       StrokeShape="RoundRectangle 20"
+                       Padding="20,10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}" 
+                                             CommandParameter="Categories"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="📁 Categories" 
+                           FontSize="14" 
+                           FontAttributes="Bold"
+                           TextColor="{Binding IsCategoriesTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#FFFFFF|Dynamic:PrimaryTextColor'}"/>
+                </Border>
 
+                <Border StrokeThickness="0"
+                       BackgroundColor="{Binding IsMenuItemsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
+                       StrokeShape="RoundRectangle 20"
+                       Padding="20,10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}" 
+                                             CommandParameter="MenuItems"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="🍽️ Menu Items" 
+                           FontSize="14" 
+                           FontAttributes="Bold"
+                           TextColor="{Binding IsMenuItemsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#FFFFFF|Dynamic:PrimaryTextColor'}"/>
+                </Border>
 
-                        <!-- Dashboard Tab -->
-                        <StackLayout IsVisible="{Binding IsDashboardTab}" Spacing="15">
-                            <Label Text="Finance Dashboard" FontSize="20" FontAttributes="Bold"/>
+                <Border StrokeThickness="0"
+                       BackgroundColor="{Binding IsTaxSettingsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
+                       StrokeShape="RoundRectangle 20"
+                       Padding="20,10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}" 
+                                             CommandParameter="TaxSettings"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="💰 Tax Settings" 
+                           FontSize="14" 
+                           FontAttributes="Bold"
+                           TextColor="{Binding IsTaxSettingsTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#FFFFFF|Dynamic:PrimaryTextColor'}"/>
+                </Border>
 
-                            <!-- Summary Cards -->
-                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10" RowSpacing="10">
-                                <Frame Grid.Column="0" BackgroundColor="White" Padding="15" CornerRadius="10">
-                                    <StackLayout>
-                                        <Label Text="Today's Revenue" FontSize="12" TextColor="#666"/>
-                                        <Label Text="{Binding TodayRevenue, StringFormat='Rp {0:N0}'}" 
-                                           FontSize="20" FontAttributes="Bold" TextColor="#27AE60"/>
-                                        <Label Text="{Binding TodayTransactions, StringFormat='{0} transactions'}" 
-                                           FontSize="11" TextColor="#999"/>
-                                    </StackLayout>
-                                </Frame>
+                <Border StrokeThickness="0"
+                       BackgroundColor="{Binding IsUsersTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
+                       StrokeShape="RoundRectangle 20"
+                       Padding="20,10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SelectTabCommand}" 
+                                             CommandParameter="Users"/>
+                    </Border.GestureRecognizers>
+                    <Label Text="👥 Users" 
+                           FontSize="14" 
+                           FontAttributes="Bold"
+                           TextColor="{Binding IsUsersTab, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#FFFFFF|Dynamic:PrimaryTextColor'}"/>
+                </Border>
+            </HorizontalStackLayout>
+        </ScrollView>
 
-                                <Frame Grid.Column="1" BackgroundColor="White" Padding="15" CornerRadius="10">
-                                    <StackLayout>
-                                        <Label Text="Cash Collected" FontSize="12" TextColor="#666"/>
-                                        <Label Text="{Binding TodayCash, StringFormat='Rp {0:N0}'}" 
-                                           FontSize="20" FontAttributes="Bold" TextColor="#3498DB"/>
-                                    </StackLayout>
-                                </Frame>
+        <!-- Tab Content -->
+        <ScrollView Grid.Row="2" Padding="20">
+            <StackLayout Spacing="20">
 
-                                <Frame Grid.Column="2" BackgroundColor="White" Padding="15" CornerRadius="10">
-                                    <StackLayout>
-                                        <Label Text="QRIS Collected" FontSize="12" TextColor="#666"/>
-                                        <Label Text="{Binding TodayQRIS, StringFormat='Rp {0:N0}'}" 
-                                           FontSize="20" FontAttributes="Bold" TextColor="#9B59B6"/>
-                                    </StackLayout>
-                                </Frame>
-                            </Grid>
+                <!-- Dashboard Tab -->
+                <StackLayout IsVisible="{Binding IsDashboardTab}" Spacing="20">
+                    <Label Text="📊 Finance Dashboard" 
+                           FontSize="24" 
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource PrimaryTextColor}"/>
 
-                            <!-- Recent Transactions -->
-                            <Label Text="Recent Transactions" FontSize="16" FontAttributes="Bold" Margin="0,20,0,10"/>
-                            <CollectionView ItemsSource="{Binding RecentTransactions}" HeightRequest="300">
+                    <!-- Summary Cards -->
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="15" RowSpacing="15">
+                        <!-- Today's Revenue -->
+                        <Border Grid.Column="0" 
+                               BackgroundColor="{DynamicResource CardBackgroundColor}"
+                               StrokeThickness="0"
+                               StrokeShape="RoundRectangle 15"
+                               Padding="20">
+                            <Border.Shadow>
+                                <Shadow Brush="{DynamicResource ShadowColor}" 
+                                        Offset="0,4" 
+                                        Radius="12" 
+                                        Opacity="0.15"/>
+                            </Border.Shadow>
+                            <StackLayout Spacing="8">
+                                <Label Text="💰" FontSize="32"/>
+                                <Label Text="Today's Revenue" 
+                                       FontSize="13" 
+                                       TextColor="{DynamicResource SecondaryTextColor}"/>
+                                <Label Text="{Binding TodayRevenue, StringFormat='Rp {0:N0}'}" 
+                                       FontSize="24" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{DynamicResource SuccessColor}"/>
+                                <Label Text="{Binding TodayTransactions, StringFormat='{0} transactions'}" 
+                                       FontSize="12" 
+                                       TextColor="{DynamicResource TertiaryTextColor}"/>
+                            </StackLayout>
+                        </Border>
+
+                        <!-- Cash Collected -->
+                        <Border Grid.Column="1" 
+                               BackgroundColor="{DynamicResource CardBackgroundColor}"
+                               StrokeThickness="0"
+                               StrokeShape="RoundRectangle 15"
+                               Padding="20">
+                            <Border.Shadow>
+                                <Shadow Brush="{DynamicResource ShadowColor}" 
+                                        Offset="0,4" 
+                                        Radius="12" 
+                                        Opacity="0.15"/>
+                            </Border.Shadow>
+                            <StackLayout Spacing="8">
+                                <Label Text="💵" FontSize="32"/>
+                                <Label Text="Cash Collected" 
+                                       FontSize="13" 
+                                       TextColor="{DynamicResource SecondaryTextColor}"/>
+                                <Label Text="{Binding TodayCash, StringFormat='Rp {0:N0}'}" 
+                                       FontSize="24" 
+                                       FontAttributes="Bold" 
+                                       TextColor="{DynamicResource PrimaryColor}"/>
+                            </StackLayout>
+                        </Border>
+
+                        <!-- QRIS Collected -->
+                        <Border Grid.Column="2" 
+                               BackgroundColor="{DynamicResource CardBackgroundColor}"
+                               StrokeThickness="0"
+                               StrokeShape="RoundRectangle 15"
+                               Padding="20">
+                            <Border.Shadow>
+                                <Shadow Brush="{DynamicResource ShadowColor}" 
+                                        Offset="0,4" 
+                                        Radius="12" 
+                                        Opacity="0.15"/>
+                            </Border.Shadow>
+                            <StackLayout Spacing="8">
+                                <Label Text="📱" FontSize="32"/>
+                                <Label Text="QRIS Collected" 
+                                       FontSize="13" 
+                                       TextColor="{DynamicResource SecondaryTextColor}"/>
+                                <Label Text="{Binding TodayQRIS, StringFormat='Rp {0:N0}'}" 
+                                       FontSize="24" 
+                                       FontAttributes="Bold" 
+                                       TextColor="#9B59B6"/>
+                            </StackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Recent Transactions -->
+                    <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="20">
+                        <Border.Shadow>
+                            <Shadow Brush="{DynamicResource ShadowColor}" 
+                                    Offset="0,4" 
+                                    Radius="12" 
+                                    Opacity="0.15"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="15">
+                            <Label Text="Recent Transactions" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"/>
+
+                            <CollectionView ItemsSource="{Binding RecentTransactions}" 
+                                           HeightRequest="400">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
-                                        <Frame Margin="0,5" Padding="10" BackgroundColor="White" CornerRadius="5">
-                                            <Grid ColumnDefinitions="*,Auto,Auto">
-                                                <StackLayout Grid.Column="0">
-                                                    <Label Text="{Binding OrderNumber}" FontSize="12" FontAttributes="Bold"/>
+                                        <Border Margin="0,0,0,10"
+                                               BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                               StrokeThickness="0"
+                                               StrokeShape="RoundRectangle 10"
+                                               Padding="15">
+                                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                                                <StackLayout Grid.Column="0" Spacing="4">
+                                                    <Label Text="{Binding OrderNumber}" 
+                                                           FontSize="14" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="{DynamicResource PrimaryTextColor}"/>
                                                     <Label Text="{Binding TransactionDate, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
-                                                       FontSize="10" TextColor="#666"/>
+                                                           FontSize="12" 
+                                                           TextColor="{DynamicResource SecondaryTextColor}"/>
                                                 </StackLayout>
-                                                <Label Grid.Column="1" Text="{Binding PaymentMethod}" 
-                                                   FontSize="11" TextColor="#3498DB" VerticalOptions="Center" Margin="0,0,10,0"/>
-                                                <Label Grid.Column="2" Text="{Binding OrderTotal, StringFormat='Rp {0:N0}'}" 
-                                                   FontSize="12" FontAttributes="Bold" VerticalOptions="Center"/>
+                                                <Border Grid.Column="1" 
+                                                       BackgroundColor="{DynamicResource PrimaryColor}"
+                                                       StrokeThickness="0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Padding="10,5"
+                                                       VerticalOptions="Center">
+                                                    <Label Text="{Binding PaymentMethod}" 
+                                                           FontSize="11" 
+                                                           FontAttributes="Bold"
+                                                           TextColor="White"/>
+                                                </Border>
+                                                <Label Grid.Column="2" 
+                                                       Text="{Binding OrderTotal, StringFormat='Rp {0:N0}'}" 
+                                                       FontSize="14" 
+                                                       FontAttributes="Bold" 
+                                                       TextColor="{DynamicResource SuccessColor}"
+                                                       VerticalOptions="Center"/>
                                             </Grid>
-                                        </Frame>
+                                        </Border>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </StackLayout>
 
-                        <!-- Categories Tab -->
-                        <StackLayout IsVisible="{Binding IsCategoriesTab}" Spacing="15">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" Text="Menu Categories" FontSize="20" FontAttributes="Bold"/>
-                                <Button Grid.Column="1" Text="+ Add Category" BackgroundColor="#27AE60" 
-                                    TextColor="White" Command="{Binding AddCategoryCommand}"/>
-                            </Grid>
-
-                            <CollectionView ItemsSource="{Binding Categories}" HeightRequest="500">
-                                <CollectionView.ItemsLayout>
-                                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
-                                </CollectionView.ItemsLayout>
-                                
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Frame Margin="0,5" Padding="15" BackgroundColor="White" CornerRadius="5">
-                                            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                                                <Label Grid.Column="0" Text="{Binding DisplayOrder}" 
-                                                   FontSize="16" FontAttributes="Bold" VerticalOptions="Center" Margin="0,0,15,0"/>
-                                                <StackLayout Grid.Column="1">
-                                                    <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold"/>
-                                                    <Label Text="{Binding Description}" FontSize="11" TextColor="#666"/>
-                                                </StackLayout>
-                                                <Button Grid.Column="2" Text="✏️" BackgroundColor="#3498DB" 
-                                                    TextColor="White" WidthRequest="40" Margin="5,0"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCategoryCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                                <Button Grid.Column="3" Text="🗑️" BackgroundColor="#E74C3C" 
-                                                    TextColor="White" WidthRequest="40"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCategoryCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                            </Grid>
-                                        </Frame>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </StackLayout>
-
-                        <!-- Menu Items Tab -->
-                        <StackLayout IsVisible="{Binding IsMenuItemsTab}" Spacing="15">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" Text="Menu Items" FontSize="20" FontAttributes="Bold"/>
-                                <Button Grid.Column="1" Text="+ Add Item" BackgroundColor="#27AE60" 
-                                    TextColor="White" Command="{Binding AddMenuItemCommand}"/>
-                            </Grid>
-
-
-                            <CollectionView ItemsSource="{Binding MenuItems}" HeightRequest="500">
-                                <CollectionView.ItemsLayout>
-                                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
-                                </CollectionView.ItemsLayout>
-
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Frame Margin="0,5" Padding="15" BackgroundColor="White" CornerRadius="5">
-                                            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                                                <StackLayout Grid.Column="0">
-                                                    <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold"/>
-                                                    <Label Text="{Binding Description}" FontSize="11" TextColor="#666"/>
-                                                    <Label Text="{Binding Price, StringFormat='Rp {0:N0}'}" 
-                                                       FontSize="12" TextColor="#27AE60" FontAttributes="Bold"/>
-                                                </StackLayout>
-                                                <Label Grid.Column="1" Text="{Binding IsTaxable, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Taxable|Non-Taxable'}" 
-                                                   FontSize="10" VerticalOptions="Center" Margin="10,0"/>
-                                                <Button Grid.Column="2" Text="✏️" BackgroundColor="#3498DB" 
-                                                    TextColor="White" WidthRequest="40" Margin="5,0"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditMenuItemCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                                <Button Grid.Column="3" Text="🗑️" BackgroundColor="#E74C3C" 
-                                                    TextColor="White" WidthRequest="40"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteMenuItemCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                            </Grid>
-                                        </Frame>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-
-                        </StackLayout>
-
-                        <!-- Tax Settings Tab -->
-                        <StackLayout IsVisible="{Binding IsTaxSettingsTab}" Spacing="15">
-                            <Label Text="Tax Settings" FontSize="20" FontAttributes="Bold"/>
-
-                            <Frame BackgroundColor="White" Padding="20" CornerRadius="10">
-                                <StackLayout Spacing="15">
-                                    <StackLayout Spacing="5">
-                                        <Label Text="Tax Name" FontSize="12"/>
-                                        <Entry Text="{Binding TaxName}" Placeholder="e.g., PPN, VAT" FontSize="14"/>
+                                <CollectionView.EmptyView>
+                                    <StackLayout Padding="40" 
+                                                HorizontalOptions="Center" 
+                                                VerticalOptions="Center">
+                                        <Label Text="📊" 
+                                               FontSize="60" 
+                                               HorizontalOptions="Center"
+                                               Opacity="0.3"/>
+                                        <Label Text="No transactions yet" 
+                                               FontSize="16" 
+                                               TextColor="{DynamicResource SecondaryTextColor}"
+                                               HorizontalOptions="Center"/>
                                     </StackLayout>
+                                </CollectionView.EmptyView>
+                            </CollectionView>
+                        </StackLayout>
+                    </Border>
+                </StackLayout>
 
-                                    <StackLayout Spacing="5">
-                                        <Label Text="Tax Rate (%)" FontSize="12"/>
-                                        <Entry Text="{Binding TaxRate}" Placeholder="e.g., 10" Keyboard="Numeric" FontSize="14"/>
-                                    </StackLayout>
+                <!-- Categories Tab -->
+                <StackLayout IsVisible="{Binding IsCategoriesTab}" Spacing="20">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" 
+                               Text="📁 Menu Categories" 
+                               FontSize="24" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"/>
+                        <Button Grid.Column="1" 
+                                Text="+ Add Category" 
+                                BackgroundColor="{DynamicResource SuccessColor}" 
+                                TextColor="White"
+                                CornerRadius="20"
+                                Padding="20,10"
+                                Command="{Binding AddCategoryCommand}"/>
+                    </Grid>
 
-                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                                        <CheckBox Grid.Column="0" IsChecked="{Binding IsTaxEnabled}"/>
-                                        <Label Grid.Column="1" Text="Tax Enabled" VerticalOptions="Center"/>
+                    <CollectionView ItemsSource="{Binding Categories}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,12"
+                                       BackgroundColor="{DynamicResource CardBackgroundColor}"
+                                       StrokeThickness="0"
+                                       StrokeShape="RoundRectangle 12"
+                                       Padding="20">
+                                    <Border.Shadow>
+                                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                                Offset="0,2" 
+                                                Radius="8" 
+                                                Opacity="0.1"/>
+                                    </Border.Shadow>
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="15">
+                                        <Frame Grid.Column="0"
+                                               WidthRequest="40"
+                                               HeightRequest="40"
+                                               CornerRadius="20"
+                                               Padding="0"
+                                               BackgroundColor="{DynamicResource PrimaryColor}"
+                                               HasShadow="False">
+                                            <Label Text="{Binding DisplayOrder}" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="White"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Frame>
+
+                                        <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                            <Label Text="{Binding Name}" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource PrimaryTextColor}"/>
+                                            <Label Text="{Binding Description}" 
+                                                   FontSize="13" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}"/>
+                                        </StackLayout>
+
+                                        <Button Grid.Column="2" 
+                                                Text="✏️" 
+                                                BackgroundColor="{DynamicResource PrimaryColor}" 
+                                                TextColor="White" 
+                                                WidthRequest="40"
+                                                HeightRequest="40"
+                                                CornerRadius="20"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditCategoryCommand}"
+                                                CommandParameter="{Binding .}"/>
+
+                                        <Button Grid.Column="3" 
+                                                Text="🗑️" 
+                                                BackgroundColor="{DynamicResource DangerColor}" 
+                                                TextColor="White" 
+                                                WidthRequest="40"
+                                                HeightRequest="40"
+                                                CornerRadius="20"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteCategoryCommand}"
+                                                CommandParameter="{Binding .}"/>
                                     </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
 
-                                    <Button Text="💾 Save Tax Settings" BackgroundColor="#27AE60" 
-                                        TextColor="White" Command="{Binding SaveTaxSettingsCommand}"/>
-                                </StackLayout>
-                            </Frame>
+                        <CollectionView.EmptyView>
+                            <StackLayout Padding="40" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center">
+                                <Label Text="📁" 
+                                       FontSize="60" 
+                                       HorizontalOptions="Center"
+                                       Opacity="0.3"/>
+                                <Label Text="No categories yet" 
+                                       FontSize="16" 
+                                       TextColor="{DynamicResource SecondaryTextColor}"
+                                       HorizontalOptions="Center"/>
+                                <Button Text="+ Add Your First Category"
+                                        BackgroundColor="{DynamicResource PrimaryColor}"
+                                        TextColor="White"
+                                        CornerRadius="20"
+                                        Padding="20,10"
+                                        Margin="0,20,0,0"
+                                        Command="{Binding AddCategoryCommand}"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </StackLayout>
+
+                <!-- Menu Items Tab -->
+                <StackLayout IsVisible="{Binding IsMenuItemsTab}" Spacing="20">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" 
+                               Text="🍽️ Menu Items" 
+                               FontSize="24" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"/>
+                        <Button Grid.Column="1" 
+                                Text="+ Add Item" 
+                                BackgroundColor="{DynamicResource SuccessColor}" 
+                                TextColor="White"
+                                CornerRadius="20"
+                                Padding="20,10"
+                                Command="{Binding AddMenuItemCommand}"/>
+                    </Grid>
+
+                    <CollectionView ItemsSource="{Binding MenuItems}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,12"
+                                       BackgroundColor="{DynamicResource CardBackgroundColor}"
+                                       StrokeThickness="0"
+                                       StrokeShape="RoundRectangle 12"
+                                       Padding="20">
+                                    <Border.Shadow>
+                                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                                Offset="0,2" 
+                                                Radius="8" 
+                                                Opacity="0.1"/>
+                                    </Border.Shadow>
+
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="15">
+                                        <StackLayout Grid.Column="0" Spacing="6">
+                                            <Label Text="{Binding Name}" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource PrimaryTextColor}"/>
+                                            <Label Text="{Binding Description}" 
+                                                   FontSize="13" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}"
+                                                   MaxLines="2"/>
+                                            <HorizontalStackLayout Spacing="10">
+                                                <Label Text="{Binding Price, StringFormat='Rp {0:N0}'}" 
+                                                       FontSize="15" 
+                                                       TextColor="{DynamicResource SuccessColor}" 
+                                                       FontAttributes="Bold"/>
+                                                <Border BackgroundColor="{Binding IsTaxable, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#FFA726|#CCCCCC'}"
+                                                       StrokeThickness="0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Padding="8,4">
+                                                    <Label Text="{Binding IsTaxable, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Taxable|Non-Taxable'}" 
+                                                           FontSize="11"
+                                                           FontAttributes="Bold"
+                                                           TextColor="White"/>
+                                                </Border>
+                                            </HorizontalStackLayout>
+                                        </StackLayout>
+
+                                        <Button Grid.Column="2" 
+                                                Text="✏️" 
+                                                BackgroundColor="{DynamicResource PrimaryColor}" 
+                                                TextColor="White" 
+                                                WidthRequest="40"
+                                                HeightRequest="40"
+                                                CornerRadius="20"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditMenuItemCommand}"
+                                                CommandParameter="{Binding .}"/>
+
+                                        <Button Grid.Column="3" 
+                                                Text="🗑️" 
+                                                BackgroundColor="{DynamicResource DangerColor}" 
+                                                TextColor="White" 
+                                                WidthRequest="40"
+                                                HeightRequest="40"
+                                                CornerRadius="20"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteMenuItemCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            <StackLayout Padding="40" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center">
+                                <Label Text="🍽️" 
+                                       FontSize="60" 
+                                       HorizontalOptions="Center"
+                                       Opacity="0.3"/>
+                                <Label Text="No menu items yet" 
+                                       FontSize="16" 
+                                       TextColor="{DynamicResource SecondaryTextColor}"
+                                       HorizontalOptions="Center"/>
+                                <Button Text="+ Add Your First Item"
+                                        BackgroundColor="{DynamicResource PrimaryColor}"
+                                        TextColor="White"
+                                        CornerRadius="20"
+                                        Padding="20,10"
+                                        Margin="0,20,0,0"
+                                        Command="{Binding AddMenuItemCommand}"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </StackLayout>
+
+                <!-- Tax Settings Tab -->
+                <StackLayout IsVisible="{Binding IsTaxSettingsTab}" Spacing="20">
+                    <Label Text="💰 Tax Settings" 
+                           FontSize="24" 
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource PrimaryTextColor}"/>
+
+                    <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="25">
+                        <Border.Shadow>
+                            <Shadow Brush="{DynamicResource ShadowColor}" 
+                                    Offset="0,4" 
+                                    Radius="12" 
+                                    Opacity="0.15"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="20">
+                            <StackLayout Spacing="8">
+                                <Label Text="Tax Name" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                                <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                       StrokeThickness="1"
+                                       Stroke="{DynamicResource BorderColor}"
+                                       StrokeShape="RoundRectangle 10"
+                                       Padding="15">
+                                    <Entry Text="{Binding TaxName}" 
+                                           Placeholder="e.g., PPN, VAT" 
+                                           FontSize="15"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           BackgroundColor="Transparent"/>
+                                </Border>
+                            </StackLayout>
+
+                            <StackLayout Spacing="8">
+                                <Label Text="Tax Rate (%)" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                                <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                       StrokeThickness="1"
+                                       Stroke="{DynamicResource BorderColor}"
+                                       StrokeShape="RoundRectangle 10"
+                                       Padding="15">
+                                    <Entry Text="{Binding TaxRate}" 
+                                           Placeholder="e.g., 10" 
+                                           Keyboard="Numeric" 
+                                           FontSize="15"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           BackgroundColor="Transparent"/>
+                                </Border>
+                            </StackLayout>
+
+                            <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   StrokeThickness="1"
+                                   Stroke="{DynamicResource BorderColor}"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="15">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="15">
+                                    <CheckBox Grid.Column="0" 
+                                             IsChecked="{Binding IsTaxEnabled}"
+                                             Color="{DynamicResource PrimaryColor}"/>
+                                    <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="Tax Enabled" 
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource PrimaryTextColor}"/>
+                                        <Label Text="Enable tax calculation for taxable items" 
+                                               FontSize="12"
+                                               TextColor="{DynamicResource SecondaryTextColor}"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Border>
+
+                            <Button Text="💾 Save Tax Settings" 
+                                    BackgroundColor="{DynamicResource SuccessColor}" 
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    Padding="0,15"
+                                    FontSize="16"
+                                    FontAttributes="Bold"
+                                    Command="{Binding SaveTaxSettingsCommand}">
+                                <Button.Shadow>
+                                    <Shadow Brush="{DynamicResource SuccessColor}" 
+                                            Offset="0,4" 
+                                            Radius="12" 
+                                            Opacity="0.4"/>
+                                </Button.Shadow>
+                            </Button>
                         </StackLayout>
+                    </Border>
+                </StackLayout>
 
-                        <!-- Users Tab -->
-                        <StackLayout IsVisible="{Binding IsUsersTab}" Spacing="15">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <Label Grid.Column="0" Text="User Management" FontSize="20" FontAttributes="Bold"/>
-                                <Button Grid.Column="1" Text="+ Add User" BackgroundColor="#27AE60" 
-                                    TextColor="White" Command="{Binding AddUserCommand}"/>
-                            </Grid>
+                <!-- Users Tab -->
+                <StackLayout IsVisible="{Binding IsUsersTab}" Spacing="20">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" 
+                               Text="👥 User Management" 
+                               FontSize="24" 
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"/>
+                        <Button Grid.Column="1" 
+                                Text="+ Add User" 
+                                BackgroundColor="{DynamicResource SuccessColor}" 
+                                TextColor="White"
+                                CornerRadius="20"
+                                Padding="20,10"
+                                Command="{Binding AddUserCommand}"/>
+                    </Grid>
 
-                            <CollectionView ItemsSource="{Binding Users}" HeightRequest="500">
-                                <CollectionView.ItemsLayout>
-                                    <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
-                                </CollectionView.ItemsLayout>
+                    <CollectionView ItemsSource="{Binding Users}">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" VerticalItemSpacing="5"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,12"
+                                       BackgroundColor="{DynamicResource CardBackgroundColor}"
+                                       StrokeThickness="0"
+                                       StrokeShape="RoundRectangle 12"
+                                       Padding="20">
+                                    <Border.Shadow>
+                                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                                Offset="0,2" 
+                                                Radius="8" 
+                                                Opacity="0.1"/>
+                                    </Border.Shadow>
 
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Frame Margin="0,5" Padding="15" BackgroundColor="White" CornerRadius="5">
-                                            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
-                                                <StackLayout Grid.Column="0">
-                                                    <Label Text="{Binding Username}" FontSize="14" FontAttributes="Bold"/>
-                                                    <Label Text="{Binding Email}" FontSize="11" TextColor="#666"/>
-                                                    <Label Text="{Binding Role}" FontSize="11" TextColor="#3498DB"/>
-                                                </StackLayout>
-                                                <Label Grid.Column="1" Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Active|Inactive'}" 
-                                                   FontSize="11" VerticalOptions="Center" Margin="10,0"
-                                                   TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#27AE60|#E74C3C'}"/>
-                                                <Button Grid.Column="2" Text="🔑" BackgroundColor="#9B59B6" 
-                                                    TextColor="White" WidthRequest="40" Margin="5,0"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ResetPasswordCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                                <Button Grid.Column="3" Text="✏️" BackgroundColor="#3498DB" 
-                                                    TextColor="White" WidthRequest="40" Margin="5,0"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditUserCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                                <Button Grid.Column="4" Text="🗑️" BackgroundColor="#E74C3C" 
-                                                    TextColor="White" WidthRequest="40"
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteUserCommand}"
-                                                    CommandParameter="{Binding .}"/>
-                                            </Grid>
-                                        </Frame>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </StackLayout>
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+                                        <StackLayout Grid.Column="0" Spacing="6">
+                                            <Label Text="{Binding Username}" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource PrimaryTextColor}"/>
+                                            <Label Text="{Binding Email}" 
+                                                   FontSize="13" 
+                                                   TextColor="{DynamicResource SecondaryTextColor}"/>
+                                            <HorizontalStackLayout Spacing="10">
+                                                <Border BackgroundColor="{DynamicResource PrimaryColor}"
+                                                       StrokeThickness="0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Padding="8,4">
+                                                    <Label Text="{Binding Role}" 
+                                                           FontSize="11"
+                                                           FontAttributes="Bold"
+                                                           TextColor="White"/>
+                                                </Border>
+                                                <Border BackgroundColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#27AE60|#E74C3C'}"
+                                                       StrokeThickness="0"
+                                                       StrokeShape="RoundRectangle 8"
+                                                       Padding="8,4">
+                                                    <Label Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Active|Inactive'}" 
+                                                           FontSize="11"
+                                                           FontAttributes="Bold"
+                                                           TextColor="White"/>
+                                                </Border>
+                                            </HorizontalStackLayout>
+                                        </StackLayout>
 
+                                        <Button Grid.Column="1" 
+                                                Text="🔑" 
+                                                BackgroundColor="#9B59B6" 
+                                                TextColor="White" 
+                                                WidthRequest="40"
+                                                HeightRequest="40"
+                                                CornerRadius="20"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.ResetPasswordCommand}"
+                                                CommandParameter="{Binding .}"/>
 
-                    </VerticalStackLayout>
+                                        <Button Grid.Column="2" 
+                                                Text="✏️" 
+                                                BackgroundColor="{DynamicResource PrimaryColor}" 
+                                                TextColor="White" 
+                                                WidthRequest="40"
+                                                HeightRequest="40"
+                                                CornerRadius="20"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditUserCommand}"
+                                                CommandParameter="{Binding .}"/>
 
-                </ScrollView>
+                                        <Button Grid.Column="3" 
+                                                Text="🗑️" 
+                                                BackgroundColor="{DynamicResource DangerColor}" 
+                                                TextColor="White" 
+                                                WidthRequest="40"
+                                                HeightRequest="40"
+                                                CornerRadius="20"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.DeleteUserCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
 
-
-
-
+                        <CollectionView.EmptyView>
+                            <StackLayout Padding="40" 
+                                        HorizontalOptions="Center" 
+                                        VerticalOptions="Center">
+                                <Label Text="👥" 
+                                       FontSize="60" 
+                                       HorizontalOptions="Center"
+                                       Opacity="0.3"/>
+                                <Label Text="No users yet" 
+                                       FontSize="16" 
+                                       TextColor="{DynamicResource SecondaryTextColor}"
+                                       HorizontalOptions="Center"/>
+                                <Button Text="+ Add Your First User"
+                                        BackgroundColor="{DynamicResource PrimaryColor}"
+                                        TextColor="White"
+                                        CornerRadius="20"
+                                        Padding="20,10"
+                                        Margin="0,20,0,0"
+                                        Command="{Binding AddUserCommand}"/>
+                            </StackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </StackLayout>
 
             </StackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <Grid Grid.Row="0" Grid.RowSpan="3"
+              IsVisible="{Binding IsLoading}"
+              BackgroundColor="#80000000">
+            <Border WidthRequest="120"
+                   HeightRequest="120"
+                   BackgroundColor="{DynamicResource CardBackgroundColor}"
+                   StrokeThickness="0"
+                   StrokeShape="RoundRectangle 20">
+                <StackLayout Spacing="15" 
+                            HorizontalOptions="Center" 
+                            VerticalOptions="Center">
+                    <ActivityIndicator IsRunning="True"
+                                     Color="{DynamicResource PrimaryColor}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"/>
+                    <Label Text="Loading..."
+                           FontSize="14"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Border>
         </Grid>
+
     </Grid>
 </ContentPage>
