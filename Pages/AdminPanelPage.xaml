@@ -65,7 +65,7 @@
         <!-- Tab Buttons -->
         <ScrollView Grid.Row="1" 
                    Orientation="Horizontal" 
-                   Padding="15,15,15,0"
+                   Padding="15"
                    HorizontalScrollBarVisibility="Never">
             <HorizontalStackLayout Spacing="10">
                 <Border StrokeThickness="0"

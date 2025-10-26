@@ -27,7 +27,7 @@
                 <Frame Grid.Column="0"
                        WidthRequest="45"
                        HeightRequest="45"
-                       CornerRadius="23"
+                       CornerRadius="20"
                        Padding="0"
                        BackgroundColor="#FFFFFF30"
                        HasShadow="False">
@@ -52,21 +52,19 @@
                         FontSize="20"
                         BackgroundColor="#FFFFFF30"
                         TextColor="White"
-                        BorderWidth="2"
                         BorderColor="#FFFFFF50"
-                        CornerRadius="20"
-                        WidthRequest="40"
-                        HeightRequest="40"
+                        BorderWidth="2"
+                        CornerRadius="15"
+                        Margin="-5,0"
+                        Padding="20,8"
                         Command="{Binding RefreshCommand}"/>
 
                 <Button Grid.Column="3"
-                        Text="← Back"
-                        BackgroundColor="#FFFFFF30"
-                        TextColor="White"
-                        BorderWidth="2"
-                        BorderColor="#FFFFFF50"
-                        CornerRadius="20"
-                        Padding="15,8"
+                        Text="← Back" 
+                        BackgroundColor="{DynamicResource SecondaryColor}" 
+                        TextColor="White" 
+                        CornerRadius="15"
+                        Padding="20,8"
                         FontSize="14"
                         Command="{Binding BackCommand}"/>
             </Grid>
@@ -101,7 +99,7 @@
                                VerticalOptions="Center"/>
 
                         <Border Grid.Column="2"
-                               BackgroundColor="{Binding IsTodaySelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Transparent'}"
+                               BackgroundColor="{Binding IsTodaySelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:CardBackgroundColor'}"
                                Stroke="{Binding IsTodaySelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:BorderColor'}"
                                StrokeThickness="2"
                                StrokeShape="RoundRectangle 10"
@@ -117,7 +115,7 @@
                         </Border>
 
                         <Border Grid.Column="3"
-                               BackgroundColor="{Binding IsWeekSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Transparent'}"
+                               BackgroundColor="{Binding IsWeekSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:CardBackgroundColor'}"
                                Stroke="{Binding IsWeekSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:BorderColor'}"
                                StrokeThickness="2"
                                StrokeShape="RoundRectangle 10"
@@ -133,7 +131,7 @@
                         </Border>
 
                         <Border Grid.Column="4"
-                               BackgroundColor="{Binding IsMonthSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Transparent'}"
+                               BackgroundColor="{Binding IsMonthSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:CardBackgroundColor'}"
                                Stroke="{Binding IsMonthSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:BorderColor'}"
                                StrokeThickness="2"
                                StrokeShape="RoundRectangle 10"

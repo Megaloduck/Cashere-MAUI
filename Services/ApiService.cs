@@ -15,8 +15,10 @@ namespace Cashere.Services
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://localhost:7102/api";
         private string _authToken;
-        private readonly JsonSerializerOptions _jsonOptions;
-      
+        private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
 
         public ApiService()
         {
@@ -792,15 +794,22 @@ namespace Cashere.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync(
-                    $"{_baseUrl}/transactions?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
-                response.EnsureSuccessStatusCode();
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<TransactionModel>>(json, _jsonOptions);
+                var url = $"{_baseUrl}/transactions?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}";
+                System.Diagnostics.Debug.WriteLine($"📡 GET {url}");
+                var response = await _httpClient.GetAsync(url);
+
+                var content = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ GetTransactions failed: {response.StatusCode} - {content}");
+                    return new List<TransactionModel>();
+                }
+
+                return JsonSerializer.Deserialize<List<TransactionModel>>(content, _jsonOptions) ?? new List<TransactionModel>();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"GetTransactions error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"GetTransactions error: {ex}");
                 return new List<TransactionModel>();
             }
         }
@@ -809,11 +818,20 @@ namespace Cashere.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync(
-                    $"{_baseUrl}/reports/top-items?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&count={count}");
-                response.EnsureSuccessStatusCode();
-                var json = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<List<TopSellingItemResponse>>(json, _jsonOptions);
+                var url = $"{_baseUrl}/report/top-items?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&count={count}";
+                System.Diagnostics.Debug.WriteLine($"📡 GET {url}");
+
+                var response = await _httpClient.GetAsync(url);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ GetTopSellingItems failed: {response.StatusCode} - {content}");
+                    return new List<TopSellingItemResponse>();
+                }
+
+                return JsonSerializer.Deserialize<List<TopSellingItemResponse>>(content, _jsonOptions)
+                       ?? new List<TopSellingItemResponse>();
             }
             catch (Exception ex)
             {

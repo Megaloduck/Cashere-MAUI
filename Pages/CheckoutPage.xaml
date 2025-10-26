@@ -28,12 +28,13 @@
                            TextColor="#CCCCCC"/>
                 </StackLayout>
                 <Button Grid.Column="2"
-                        Text="✕"
-                        FontSize="20"
+                        Text="Cancel Order" 
                         BackgroundColor="Transparent"
-                        TextColor="White"
-                        WidthRequest="40"
-                        HeightRequest="40"
+                        TextColor="{DynamicResource DangerColor}"
+                        BorderColor="{DynamicResource DangerColor}"
+                        BorderWidth="2"
+                        CornerRadius="20"
+                        Padding="20,8" FontSize="14"
                         Command="{Binding CancelCommand}"/>
             </Grid>
         </Border>
@@ -180,7 +181,7 @@
                             Opacity="0.15"/>
                 </Border.Shadow>
 
-                <ScrollView>
+                <ScrollView VerticalScrollBarVisibility="Never">
                     <StackLayout Spacing="20">
 
                         <!-- Payment Method Title -->
@@ -381,13 +382,7 @@
                                 </Button.Shadow>
                             </Button>
 
-                            <Button Text="Cancel"
-                                    BackgroundColor="Transparent"
-                                    TextColor="{DynamicResource DangerColor}"
-                                    BorderColor="{DynamicResource DangerColor}"
-                                    BorderWidth="2"
-                                    CornerRadius="12"
-                                    Command="{Binding CancelCommand}"/>
+                        
                         </StackLayout>
 
                     </StackLayout>

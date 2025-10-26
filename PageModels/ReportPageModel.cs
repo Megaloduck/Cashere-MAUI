@@ -194,7 +194,16 @@ namespace Cashere.PageModels
                 }
 
                 // Load transactions
-                var transactions = await _apiService.GetTransactionsAsync(startDate, endDate);
+                var transactions = await _apiService.GetTransactionsAsync(startDate, endDate) ?? new List<TransactionModel>();
+
+                // 🧠 Prevent further processing when there’s no data
+                if (transactions.Count == 0)
+                {
+                    await Application.Current!.MainPage!.DisplayAlert("No Data",
+                        "No transactions found for the selected period.", "OK");
+                    IsLoading = false;
+                    return; // 🛑 stops before charts or summaries cause a crash
+                }
 
                 // Calculate summary
                 TotalRevenue = transactions.Sum(t => t.OrderTotal);
@@ -234,6 +243,7 @@ namespace Cashere.PageModels
                 IsLoading = false;
             }
         }
+
 
         private async Task LoadTopSellingItemsAsync(DateTime startDate, DateTime endDate)
         {

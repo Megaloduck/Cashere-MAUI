@@ -77,17 +77,8 @@
                                VerticalOptions="Center"
                                ReturnCommand="{Binding SearchCommand}"/>
                         
-                        <!-- Clear Button -->
-                        <Button Grid.Column="2" 
-                                Text="✕"
-                                FontSize="16"
-                                BackgroundColor="Transparent"
-                                TextColor="{DynamicResource SecondaryTextColor}"
-                                WidthRequest="32"
-                                HeightRequest="32"
-                                CornerRadius="16"
-                                IsVisible="{Binding IsSearchActive}"
-                                Command="{Binding ClearSearchCommand}"/>
+                        
+                       
                     </Grid>
                 </Border>
 
@@ -139,7 +130,7 @@
 
         <!-- Menu Section (Left Side) -->
         <Grid Grid.Row="1" Grid.Column="0"
-      Padding="15"
+      Padding="15,15,15,0"
       RowDefinitions="Auto,Auto,*"
       RowSpacing="10">
 
@@ -153,7 +144,7 @@
                 <Grid ColumnDefinitions="*,Auto">
                     <Label Grid.Column="0"
                    FontSize="14"
-                   TextColor="White"
+                   TextColor="{DynamicResource SecondaryTextColor}"
                    VerticalOptions="Center">
                         <Label.FormattedText>
                             <FormattedString>
@@ -165,7 +156,8 @@
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>
-
+                    
+                    <!-- Clear Button -->
                     <Button Grid.Column="1"
                     Text="Clear"
                     FontSize="12"
@@ -182,7 +174,7 @@
                 Orientation="Horizontal"
                 HorizontalScrollBarVisibility="Never">
 
-                <HorizontalStackLayout Spacing="12" Padding="5">
+                <HorizontalStackLayout >
                     <CollectionView ItemsSource="{Binding Categories}"
                             SelectionMode="Single"
                             SelectionChangedCommand="{Binding SelectCategoryCommand}"
@@ -196,7 +188,7 @@
                             <DataTemplate>
                                 <Border StrokeThickness="0"
                                 BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
-                                StrokeShape="RoundRectangle 20"
+                                StrokeShape="RoundRectangle 12"
                                 Padding="10">
                                     <Border.Shadow>
                                         <Shadow Brush="{DynamicResource ShadowColor}"
