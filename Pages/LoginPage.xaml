@@ -2,43 +2,294 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.LoginPage"
-             Title="Login Page"
-             BackgroundColor="#2C3E50">
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-    <Grid VerticalOptions="Center" HorizontalOptions="Center" Padding="30">
-        <Frame CornerRadius="10" BackgroundColor="White" Padding="30" 
-               HasShadow="True" WidthRequest="400" HeightRequest="400">
-            <StackLayout Spacing="20">
-                <!-- Logo/Title -->
-                <Label Text="☕ Cafe POS" FontSize="32" FontAttributes="Bold" 
-                       TextColor="#2C3E50" HorizontalTextAlignment="Center"/>
-                <Label Text="Cashier Login" FontSize="16" TextColor="#7F8C8D" 
-                       HorizontalTextAlignment="Center"/>
+    <!-- Animated Background Gradient -->
+    <Grid>
+        <BoxView>
+            <BoxView.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#667eea" Offset="0.0" />
+                    <GradientStop Color="#764ba2" Offset="1.0" />
+                </LinearGradientBrush>
+            </BoxView.Background>
+        </BoxView>
 
-                <!-- Username -->
-                <StackLayout Spacing="5">
-                    <Label Text="Username" FontSize="12" TextColor="#2C3E50"/>
-                    <Entry Text="{Binding Username}" Placeholder="Enter username" 
-                           FontSize="14"/>
-                </StackLayout>
+        <!-- Decorative Circles -->
+        <Grid>
+            <Ellipse Fill="#FFFFFF20" 
+                     WidthRequest="300" 
+                     HeightRequest="300"
+                     HorizontalOptions="Start"
+                     VerticalOptions="Start"
+                     Margin="-100,-100,0,0"/>
 
-                <!-- Password -->
-                <StackLayout Spacing="5">
-                    <Label Text="Password" FontSize="12" TextColor="#2C3E50"/>
-                    <Entry Text="{Binding Password}" Placeholder="Enter password" 
-                           IsPassword="True" FontSize="14"/>
-                </StackLayout>
+            <Ellipse Fill="#FFFFFF15" 
+                     WidthRequest="200" 
+                     HeightRequest="200"
+                     HorizontalOptions="End"
+                     VerticalOptions="End"
+                     Margin="0,0,-50,-50"/>
 
-                <!-- Login Button -->
-                <Button Text="Login" BackgroundColor="#3498DB" TextColor="White" 
-                        FontAttributes="Bold" CornerRadius="5" Padding="10" 
-                        Command="{Binding LoginCommand}"/>
+            <Ellipse Fill="#FFFFFF10" 
+                     WidthRequest="150" 
+                     HeightRequest="150"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Start"
+                     Margin="0,-50,0,0"/>
+        </Grid>
 
-                <!-- Loading Indicator -->
-                <ActivityIndicator IsRunning="{Binding IsLoading}" 
-                                 IsVisible="{Binding IsLoading}" 
-                                 Color="#3498DB"/>
-            </StackLayout>
-        </Frame>
+        <!-- Main Content -->
+        <ScrollView VerticalOptions="Center" HorizontalOptions="Center">
+            <Grid WidthRequest="450" Padding="20">
+
+                <!-- Login Card -->
+                <Border StrokeThickness="0"
+                       StrokeShape="RoundRectangle 30"
+                       BackgroundColor="{DynamicResource CardBackgroundColor}">
+                    <Border.Shadow>
+                        <Shadow Brush="#40000000" 
+                                Offset="0,10" 
+                                Radius="30" 
+                                Opacity="0.5"/>
+                    </Border.Shadow>
+
+                    <Grid RowDefinitions="Auto,*" Padding="0">
+
+                        <!-- Header Section with Gradient -->
+                        <Border Grid.Row="0"
+                               StrokeThickness="0"
+                               StrokeShape="RoundRectangle 30,30,0,0"
+                               Padding="40,40,40,30">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#667eea" Offset="0.0" />
+                                    <GradientStop Color="#764ba2" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <StackLayout Spacing="15">
+                                <!-- Logo -->
+                                <Border WidthRequest="80" 
+                                       HeightRequest="80" 
+                                       StrokeThickness="0"
+                                       StrokeShape="RoundRectangle 40"
+                                       BackgroundColor="#FFFFFF30"
+                                       HorizontalOptions="Center">
+                                    <Label Text="☕" 
+                                           FontSize="48" 
+                                           HorizontalOptions="Center" 
+                                           VerticalOptions="Center"/>
+                                </Border>
+
+                                <!-- Title -->
+                                <Label Text="Cashere POS" 
+                                       FontSize="32" 
+                                       FontAttributes="Bold" 
+                                       TextColor="White"
+                                       HorizontalTextAlignment="Center"/>
+
+                                <Label Text="Sign in to continue" 
+                                       FontSize="16" 
+                                       TextColor="#FFFFFF90"
+                                       HorizontalTextAlignment="Center"/>
+                            </StackLayout>
+                        </Border>
+
+                        <!-- Form Section -->
+                        <StackLayout Grid.Row="1" 
+                                    Padding="40,30,40,40" 
+                                    Spacing="25">
+
+                            <!-- Username Field -->
+                            <StackLayout Spacing="8">
+                                <Label Text="Username" 
+                                       FontSize="14" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+
+                                <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                       StrokeThickness="2"
+                                       Stroke="{DynamicResource BorderColor}"
+                                       StrokeShape="RoundRectangle 12">
+                                    <Grid ColumnDefinitions="Auto,*" 
+                                          Padding="15,0"
+                                          ColumnSpacing="10">
+                                        <Label Grid.Column="0" 
+                                               Text="👤" 
+                                               FontSize="20" 
+                                               VerticalOptions="Center"
+                                               Opacity="0.6"/>
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding Username}"
+                                               Placeholder="Enter your username" 
+                                               PlaceholderColor="{DynamicResource TertiaryTextColor}"
+                                               TextColor="{DynamicResource PrimaryTextColor}"
+                                               FontSize="15"
+                                               BackgroundColor="Transparent"
+                                               VerticalOptions="Center"/>
+                                    </Grid>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Password Field -->
+                            <StackLayout Spacing="8">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Grid.Column="0"
+                                           Text="Password" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}"/>
+                                    <Label Grid.Column="1"
+                                           Text="Forgot?"
+                                           FontSize="12"
+                                           TextColor="#667eea"
+                                           TextDecorations="Underline">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </Grid>
+
+                                <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                       StrokeThickness="2"
+                                       Stroke="{DynamicResource BorderColor}"
+                                       StrokeShape="RoundRectangle 12">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" 
+                                          Padding="15,0"
+                                          ColumnSpacing="10">
+                                        <Label Grid.Column="0" 
+                                               Text="🔒" 
+                                               FontSize="20" 
+                                               VerticalOptions="Center"
+                                               Opacity="0.6"/>
+                                        <Entry Grid.Column="1"
+                                               Text="{Binding Password}"
+                                               Placeholder="Enter your password" 
+                                               PlaceholderColor="{DynamicResource TertiaryTextColor}"
+                                               TextColor="{DynamicResource PrimaryTextColor}"
+                                               IsPassword="{Binding IsPasswordHidden}"
+                                               FontSize="15"
+                                               BackgroundColor="Transparent"
+                                               VerticalOptions="Center"/>
+                                        <Label Grid.Column="2"
+                                               Text="{Binding IsPasswordHidden, Converter={StaticResource BoolToTextConverter}, ConverterParameter='👁️|👁️‍🗨️'}"
+                                               FontSize="20"
+                                               VerticalOptions="Center">
+                                            <Label.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding TogglePasswordVisibilityCommand}"/>
+                                            </Label.GestureRecognizers>
+                                        </Label>
+                                    </Grid>
+                                </Border>
+                            </StackLayout>
+
+                            <!-- Remember Me -->
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                <CheckBox Grid.Column="0" 
+                                         IsChecked="{Binding RememberMe}"
+                                         Color="#667eea"/>
+                                <Label Grid.Column="1" 
+                                       Text="Remember me" 
+                                       FontSize="14"
+                                       TextColor="{DynamicResource SecondaryTextColor}"
+                                       VerticalOptions="Center"/>
+                            </Grid>
+
+                            <!-- Login Button -->
+                            <Button Text="Sign In" 
+                                    FontSize="18"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    Padding="0,15"
+                                    Margin="0,10,0,0"
+                                    Command="{Binding LoginCommand}"
+                                    IsEnabled="{Binding IsNotLoading}">
+                                <Button.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="#667eea" Offset="0.0" />
+                                        <GradientStop Color="#764ba2" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                                <Button.Shadow>
+                                    <Shadow Brush="#667eea" 
+                                            Offset="0,8" 
+                                            Radius="20" 
+                                            Opacity="0.5"/>
+                                </Button.Shadow>
+                            </Button>
+
+                            <!-- Loading Indicator -->
+                            <Border IsVisible="{Binding IsLoading}"
+                                   BackgroundColor="#667eea"
+                                   StrokeThickness="0"
+                                   StrokeShape="RoundRectangle 12"
+                                   Padding="0,15">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                                    <ActivityIndicator Grid.Column="0"
+                                                      IsRunning="True"
+                                                      Color="White"
+                                                      WidthRequest="24"
+                                                      HeightRequest="24"
+                                                      HorizontalOptions="End"/>
+                                    <Label Grid.Column="1"
+                                           Text="Signing in..."
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           VerticalOptions="Center"
+                                           HorizontalOptions="Start"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Footer -->
+                            <StackLayout Spacing="10" Margin="0,15,0,0">
+                                <Label HorizontalTextAlignment="Center"
+                                       FontSize="13"
+                                       TextColor="{DynamicResource SecondaryTextColor}">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Don't have an account? "/>
+                                            <Span Text="Contact Admin" 
+                                                  TextColor="#667eea"
+                                                  FontAttributes="Bold"
+                                                  TextDecorations="Underline"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ContactAdminCommand}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
+
+                                <!-- Version Info -->
+                                <Label Text="Version 1.0.0" 
+                                       FontSize="11" 
+                                       TextColor="{DynamicResource TertiaryTextColor}"
+                                       HorizontalTextAlignment="Center"
+                                       Opacity="0.6"/>
+                            </StackLayout>
+
+                        </StackLayout>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollView>
+
+        <!-- Theme Toggle (Top Right) -->
+        <Button Text="{Binding ThemeIcon}"
+                FontSize="24"
+                BackgroundColor="#FFFFFF30"
+                TextColor="White"
+                BorderWidth="2"
+                BorderColor="#FFFFFF50"
+                CornerRadius="25"
+                WidthRequest="50"
+                HeightRequest="50"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="20"
+                Command="{Binding ToggleThemeCommand}"/>
+
     </Grid>
 </ContentPage>

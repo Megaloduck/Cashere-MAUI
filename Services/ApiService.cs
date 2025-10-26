@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Cashere.Models;
+using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json; 
-using Cashere.Models;
+using System.Threading.Tasks;
 
 namespace Cashere.Services
 {
@@ -14,6 +15,8 @@ namespace Cashere.Services
         private readonly HttpClient _httpClient;
         private readonly string _baseUrl = "https://localhost:7102/api";
         private string _authToken;
+        private readonly JsonSerializerOptions _jsonOptions;
+      
 
         public ApiService()
         {
@@ -62,6 +65,7 @@ namespace Cashere.Services
                 throw new Exception($"Login error: {ex.Message}", ex);
             }
         }
+
 
         public async Task<bool> LogoutAsync()
         {
@@ -782,6 +786,39 @@ namespace Cashere.Services
             catch (Exception ex)
             {
                 throw new Exception($"Failed to get date range summary: {ex.Message}", ex);
+            }
+        }
+        public async Task<List<TransactionModel>> GetTransactionsAsync(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(
+                    $"{_baseUrl}/transactions?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}");
+                response.EnsureSuccessStatusCode();
+                var json = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<TransactionModel>>(json, _jsonOptions);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetTransactions error: {ex.Message}");
+                return new List<TransactionModel>();
+            }
+        }
+
+        public async Task<List<TopSellingItemResponse>> GetTopSellingItemsAsync(DateTime startDate, DateTime endDate, int count = 10)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(
+                    $"{_baseUrl}/reports/top-items?startDate={startDate:yyyy-MM-dd}&endDate={endDate:yyyy-MM-dd}&count={count}");
+                response.EnsureSuccessStatusCode();
+                var json = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<TopSellingItemResponse>>(json, _jsonOptions);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"GetTopSellingItems error: {ex.Message}");
+                return new List<TopSellingItemResponse>();
             }
         }
     }

@@ -15,8 +15,8 @@ namespace Cashere.Converters
             {
                 return paymentMethod.ToLower() switch
                 {
-                    "cash" => Color.FromArgb("#3498DB"),
-                    "qris" => Color.FromArgb("#9B59B6"),
+                    "cash" => Color.FromArgb("#667eea"),
+                    "qris" => Color.FromArgb("#f093fb"),
                     _ => Color.FromArgb("#95A5A6")
                 };
             }

@@ -23,7 +23,7 @@ namespace Cashere.Converters
                     _ => Color.FromArgb("#95A5A6")
                 };
             }
-            return Color.FromArgb("#95A5A6");
+            return Color.FromArgb("#3498DB");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

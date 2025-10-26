@@ -177,7 +177,7 @@
                 </Grid>
             </Border>
 
-            <!-- 🧭 Enhanced Category Tabs -->
+            <!-- 🧭Category Tabs -->
             <ScrollView Grid.Row="1"
                 Orientation="Horizontal"
                 HorizontalScrollBarVisibility="Never">
@@ -332,7 +332,7 @@
 
         </Grid>
 
-        <!-- Enhanced Shopping Cart (Right Side) -->
+        <!-- Shopping Cart (Right Side) -->
         <Border Grid.Row="1" Grid.Column="1"
                 StrokeThickness="0"
                 BackgroundColor="{DynamicResource SidebarBackgroundColor}"

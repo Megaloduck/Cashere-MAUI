@@ -13,13 +13,13 @@ namespace Cashere.Converters
         {
             if (value is bool boolValue && parameter is string texts)
             {
-                var textArray = texts.Split('|');
-                if (textArray.Length == 2)
+                var options = texts.Split('|');
+                if (options.Length == 2)
                 {
-                    return boolValue ? textArray[0] : textArray[1];
+                    return boolValue ? options[0] : options[1];
                 }
             }
-            return value;
+            return value?.ToString() ?? string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

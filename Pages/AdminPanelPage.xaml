@@ -36,10 +36,10 @@
                     <Label Text="Admin Panel" 
                            FontSize="22" 
                            FontAttributes="Bold" 
-                           TextColor="White"/>
+                           TextColor="{DynamicResource PrimaryTextColor}" />
                     <Label Text="Manage your restaurant settings" 
                            FontSize="12" 
-                           TextColor="#CCCCCC"/>
+                           TextColor="{DynamicResource SecondaryTextColor}" />
                 </StackLayout>
 
                 <Button Grid.Column="2" 

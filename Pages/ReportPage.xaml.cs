@@ -2,14 +2,14 @@ using Cashere.PageModels;
 
 namespace Cashere.Pages;
 
-public partial class EnhancedDashboardPage : ContentPage
+public partial class ReportPage : ContentPage
 {
-    private readonly EnhancedDashboardPageModel _pageModel;
+    private readonly ReportPageModel _pageModel;
 
-    public EnhancedDashboardPage()
+    public ReportPage()
     {
         InitializeComponent();
-        _pageModel = new EnhancedDashboardPageModel();
+        _pageModel = new ReportPageModel();
         BindingContext = _pageModel;
     }
 

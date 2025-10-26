@@ -14,8 +14,16 @@
                 <ResourceDictionary Source="Resources/Themes/LightTheme.xaml" />
                 <ResourceDictionary Source="Resources/Themes/DarkTheme.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
             
+            <!-- Converters -->
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+            <converters:BoolToCheckConverter x:Key="BoolToCheckConverter"/>
+            <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
+            <converters:ThemeIconConverter x:Key="ThemeIconConverter"/>
+            <converters:PaymentMethodToColorConverter x:Key="PaymentMethodToColorConverter"/>
+            <converters:PaymentMethodToIconConverter x:Key="PaymentMethodToIconConverter"/>
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

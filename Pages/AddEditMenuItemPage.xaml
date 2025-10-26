@@ -2,162 +2,575 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.AddEditMenuItemPage"
-             BackgroundColor="#F5F5F5">
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
-    <Grid RowDefinitions="60,*,80" Padding="0">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Header -->
-        <Grid Grid.Row="0" BackgroundColor="#2C3E50" Padding="20,10">
-            <Label Text="{Binding PageTitle}" FontSize="24" 
-                   FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
-        </Grid>
+        <!-- Header with Gradient -->
+        <Border Grid.Row="0"
+                StrokeThickness="0"
+                BackgroundColor="{DynamicResource HeaderBackgroundColor}">
+            
+            <Border.Shadow>
+                <Shadow Brush="{DynamicResource ShadowColor}" 
+                        Offset="0,4" 
+                        Radius="10" 
+                        Opacity="0.3"/>
+            </Border.Shadow>
 
-        <!-- Form Content -->
-        <ScrollView Grid.Row="1" Padding="20">
-            <StackLayout Spacing="15">
-
-                <!-- Menu Item Name -->
-                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="8">
-                        <Label Text="Item Name *" FontSize="12" FontAttributes="Bold" 
-                               TextColor="#333"/>
-                        <Entry Text="{Binding ItemName}" TextColor= "#6E6E6E"
-                               Placeholder="e.g., Cappuccino, Caesar Salad" PlaceholderColor="#C3C3C3"
-                               FontSize="14"/>
-                        <Label Text="This will appear on the menu" 
-                               FontSize="10" TextColor="#999"/>
-                    </StackLayout>
+            <Grid Padding="20,15" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                <Frame Grid.Column="0"
+                       WidthRequest="45"
+                       HeightRequest="45"
+                       CornerRadius="23"
+                       Padding="0"
+                       BackgroundColor="{DynamicResource PrimaryColor}" 
+                       HasShadow="False">
+                    <Label Text="🍽️"
+                           FontSize="24"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
                 </Frame>
+
+                <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label Text="{Binding PageTitle}"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Label Text="Create a new entry for your menu"
+                           FontSize="12"
+                           TextColor="{DynamicResource SecondaryTextColor}" />
+                </StackLayout>
+
+                <Button Grid.Column="3" 
+                        Text="← Back" 
+                        BackgroundColor="{DynamicResource SecondaryColor}" 
+                        TextColor="White" 
+                        CornerRadius="20"
+                        Padding="20,8"
+                        FontSize="14"
+                        Command="{Binding CancelCommand}"/>
+            </Grid>
+        </Border>
+
+        <!-- Form Content with ScrollView -->
+        <ScrollView Grid.Row="1" Padding="20">
+            <StackLayout Spacing="20">
+
+                <!-- Item Name -->
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,2" 
+                                Radius="8" 
+                                Opacity="0.1"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="12">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="📝" FontSize="20"/>
+                            <Label Text="Item Name" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                            <Label Text="*" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource DangerColor}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                               StrokeThickness="1"
+                               Stroke="{DynamicResource BorderColor}"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15">
+                            <Entry Text="{Binding ItemName}"
+                                   Placeholder="e.g., Cappuccino, Caesar Salad"
+                                   PlaceholderColor="{DynamicResource TertiaryTextColor}"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   FontSize="15"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <Label Text="💡 This name will appear on the menu"
+                               FontSize="12"
+                               TextColor="{DynamicResource SecondaryTextColor}"/>
+                    </StackLayout>
+                </Border>
 
                 <!-- Description -->
-                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="8">
-                        <Label Text="Description" FontSize="12" FontAttributes="Bold" 
-                               TextColor="#333"/>
-                        <Editor Text="{Binding Description}"  TextColor= "#6E6E6E"
-                                Placeholder="Brief description of the item" PlaceholderColor="#C3C3C3"
-                                HeightRequest="80"
-                                FontSize="14"/>
-                        <Label Text="Optional: Add details about ingredients or preparation" 
-                               FontSize="10" TextColor="#999"/>
-                    </StackLayout>
-                </Frame>
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,2" 
+                                Radius="8" 
+                                Opacity="0.1"/>
+                    </Border.Shadow>
 
-                <!-- Category Selection -->
-                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="8">
-                        <Label Text="Category *" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
-                        <Picker ItemsSource="{Binding Categories}" 
-                                ItemDisplayBinding="{Binding Name}"
-                                SelectedItem="{Binding SelectedCategory}"
-                                Title="Select a category"
-                                FontSize="14" TextColor="Black"/>
-                        <Label Text="Choose which category this item belongs to" 
-                               FontSize="10" TextColor="#999"/>
-                    </StackLayout>
-                </Frame>
+                    <StackLayout Spacing="12">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="📄" FontSize="20"/>
+                            <Label Text="Description" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
 
-                <!-- Price -->
-                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="8">
-                        <Label Text="Price (Rp) *" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                            <Label Grid.Column="0" Text="Rp" 
-                                   FontSize="16" FontAttributes="Bold" 
-                                   TextColor="#27AE60" VerticalOptions="Center"/>
-                            <Entry Grid.Column="1" Text="{Binding Price}" 
-                                   Placeholder="25000"
-                                   Keyboard="Numeric"
-                                   FontSize="16" FontAttributes="Bold"/>
-                        </Grid>
-                        <Label Text="Enter price without commas (e.g., 25000 for Rp 25,000)" 
-                               FontSize="10" TextColor="#999"/>
+                        <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                               StrokeThickness="1"
+                               Stroke="{DynamicResource BorderColor}"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15">
+                            <Editor Text="{Binding Description}"
+                                    Placeholder="Brief description of the item"
+                                    PlaceholderColor="{DynamicResource TertiaryTextColor}"
+                                    TextColor="{DynamicResource PrimaryTextColor}"
+                                    HeightRequest="100"
+                                    FontSize="15"
+                                    BackgroundColor="Transparent"/>
+                        </Border>
+
+                        <Label Text="💡 Optional: Add details about ingredients or preparation"
+                               FontSize="12"
+                               TextColor="{DynamicResource SecondaryTextColor}"/>
                     </StackLayout>
-                </Frame>
+                </Border>
+
+                <!-- Category & Price Row -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+
+                    <!-- Category -->
+                    <Border Grid.Column="0"
+                           BackgroundColor="{DynamicResource CardBackgroundColor}"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="20">
+                        <Border.Shadow>
+                            <Shadow Brush="{DynamicResource ShadowColor}" 
+                                    Offset="0,2" 
+                                    Radius="8" 
+                                    Opacity="0.1"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="12">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="📁" FontSize="20"/>
+                                <Label Text="Category" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"
+                                       VerticalOptions="Center"/>
+                                <Label Text="*" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource DangerColor}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+
+                            <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   StrokeThickness="1"
+                                   Stroke="{DynamicResource BorderColor}"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="10,5">
+                                <Picker ItemsSource="{Binding Categories}"
+                                        ItemDisplayBinding="{Binding Name}"
+                                        SelectedItem="{Binding SelectedCategory}"
+                                        Title="Select category"
+                                        FontSize="14"
+                                        TextColor="{DynamicResource PrimaryTextColor}"/>
+                            </Border>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- Price -->
+                    <Border Grid.Column="1"
+                           BackgroundColor="{DynamicResource CardBackgroundColor}"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="20">
+                        <Border.Shadow>
+                            <Shadow Brush="{DynamicResource ShadowColor}" 
+                                    Offset="0,2" 
+                                    Radius="8" 
+                                    Opacity="0.1"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="12">
+                            <HorizontalStackLayout Spacing="8">
+                                <Label Text="💰" FontSize="20"/>
+                                <Label Text="Price" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"
+                                       VerticalOptions="Center"/>
+                                <Label Text="*" 
+                                       FontSize="16" 
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource DangerColor}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+
+                            <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   StrokeThickness="1"
+                                   Stroke="{DynamicResource BorderColor}"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="15">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Label Grid.Column="0"
+                                           Text="Rp"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource SuccessColor}"
+                                           VerticalOptions="Center"
+                                           Margin="0,0,10,0"/>
+                                    <Entry Grid.Column="1"
+                                           Text="{Binding Price}"
+                                           Placeholder="25000"
+                                           PlaceholderColor="{DynamicResource TertiaryTextColor}"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           Keyboard="Numeric"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           BackgroundColor="Transparent"/>
+                                </Grid>
+                            </Border>
+                        </StackLayout>
+                    </Border>
+                </Grid>
 
                 <!-- Display Order -->
-                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="8">
-                        <Label Text="Display Order" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
-                            <Button Grid.Column="0" Text="-" 
-                                    BackgroundColor="#E74C3C" TextColor="White"
-                                    WidthRequest="40" HeightRequest="40"
-                                    Command="{Binding DecreaseOrderCommand}"/>
-                            <Entry Grid.Column="1" Text="{Binding DisplayOrder}" 
-                                   Keyboard="Numeric"
-                                   HorizontalTextAlignment="Center"
-                                   FontSize="16" FontAttributes="Bold"/>
-                            <Button Grid.Column="2" Text="+" 
-                                    BackgroundColor="#27AE60" TextColor="White"
-                                    WidthRequest="40" HeightRequest="40"
-                                    Command="{Binding IncreaseOrderCommand}"/>
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,2" 
+                                Radius="8" 
+                                Opacity="0.1"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="12">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="🔢" FontSize="20"/>
+                            <Label Text="Display Order" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                            <Button Grid.Column="0"
+                                    Text="−"
+                                    BackgroundColor="{DynamicResource DangerColor}"
+                                    TextColor="White"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    CornerRadius="25"
+                                    FontSize="24"
+                                    Command="{Binding DecreaseOrderCommand}">
+                                <Button.Shadow>
+                                    <Shadow Brush="{DynamicResource DangerColor}" 
+                                            Offset="0,4" 
+                                            Radius="10" 
+                                            Opacity="0.3"/>
+                                </Button.Shadow>
+                            </Button>
+
+                            <Border Grid.Column="1"
+                                   BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   StrokeThickness="2"
+                                   Stroke="{DynamicResource PrimaryColor}"
+                                   StrokeShape="RoundRectangle 12">
+                                <Entry Text="{Binding DisplayOrder}"
+                                       Keyboard="Numeric"
+                                       HorizontalTextAlignment="Center"
+                                       FontSize="24"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"
+                                       BackgroundColor="Transparent"/>
+                            </Border>
+
+                            <Button Grid.Column="2"
+                                    Text="+"
+                                    BackgroundColor="{DynamicResource SuccessColor}"
+                                    TextColor="White"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    CornerRadius="25"
+                                    FontSize="24"
+                                    Command="{Binding IncreaseOrderCommand}">
+                                <Button.Shadow>
+                                    <Shadow Brush="{DynamicResource SuccessColor}" 
+                                            Offset="0,4" 
+                                            Radius="10" 
+                                            Opacity="0.3"/>
+                                </Button.Shadow>
+                            </Button>
                         </Grid>
-                        <Label Text="Lower numbers appear first in the menu" 
-                               FontSize="10" TextColor="#999"/>
+
+                        <Label Text="💡 Lower numbers appear first in the menu"
+                               FontSize="12"
+                               TextColor="{DynamicResource SecondaryTextColor}"/>
                     </StackLayout>
-                </Frame>
+                </Border>
 
                 <!-- Tax Settings -->
-                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="8">
-                        <Label Text="Tax Settings" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,2" 
+                                Radius="8" 
+                                Opacity="0.1"/>
+                    </Border.Shadow>
 
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                            <CheckBox Grid.Column="0" IsChecked="{Binding IsTaxable}"/>
-                            <Label Grid.Column="1" Text="This item is taxable" 
-                                   VerticalOptions="Center" FontSize="14"/>
-                        </Grid>
+                    <StackLayout Spacing="15">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="💳" FontSize="20"/>
+                            <Label Text="Tax Settings" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
 
-                        <StackLayout IsVisible="{Binding IsTaxable}" Spacing="8">
-                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                                <CheckBox Grid.Column="0" IsChecked="{Binding HasCustomTaxRate}"/>
-                                <Label Grid.Column="1" Text="Use custom tax rate" 
-                                       VerticalOptions="Center" FontSize="14"/>
+                        <!-- Taxable Toggle -->
+                        <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                               StrokeThickness="1"
+                               Stroke="{DynamicResource BorderColor}"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Label Grid.Column="0"
+                                       Text="📊"
+                                       FontSize="24"
+                                       VerticalOptions="Center"/>
+                                <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="Taxable Item"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}"/>
+                                    <Label Text="Apply tax to this item"
+                                           FontSize="12"
+                                           TextColor="{DynamicResource SecondaryTextColor}"/>
+                                </StackLayout>
+                                <Switch Grid.Column="2"
+                                        IsToggled="{Binding IsTaxable}"
+                                        OnColor="{DynamicResource SuccessColor}"
+                                        ThumbColor="White"
+                                        VerticalOptions="Center"/>
                             </Grid>
+                        </Border>
 
-                            <StackLayout IsVisible="{Binding HasCustomTaxRate}" Spacing="5">
-                                <Label Text="Custom Tax Rate (%)" FontSize="12"/>
-                                <Entry Text="{Binding CustomTaxRate}" 
-                                       Placeholder="e.g., 5 for 5%"
-                                       Keyboard="Numeric"
-                                       FontSize="14"/>
-                            </StackLayout>
+                        <!-- Custom Tax Rate (Conditional) -->
+                        <StackLayout IsVisible="{Binding IsTaxable}" Spacing="12">
+                            <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   StrokeThickness="1"
+                                   Stroke="{DynamicResource BorderColor}"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="15">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                    <Label Grid.Column="0"
+                                           Text="⚙️"
+                                           FontSize="24"
+                                           VerticalOptions="Center"/>
+                                    <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="Custom Tax Rate"
+                                               FontSize="15"
+                                               FontAttributes="Bold"
+                                               TextColor="{DynamicResource PrimaryTextColor}"/>
+                                        <Label Text="Override default tax"
+                                               FontSize="12"
+                                               TextColor="{DynamicResource SecondaryTextColor}"/>
+                                    </StackLayout>
+                                    <Switch Grid.Column="2"
+                                            IsToggled="{Binding HasCustomTaxRate}"
+                                            OnColor="{DynamicResource PrimaryColor}"
+                                            ThumbColor="White"
+                                            VerticalOptions="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Custom Tax Rate Input -->
+                            <Border IsVisible="{Binding HasCustomTaxRate}"
+                                   BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                   StrokeThickness="1"
+                                   Stroke="{DynamicResource BorderColor}"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="15">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Entry Grid.Column="0"
+                                           Text="{Binding CustomTaxRate}"
+                                           Placeholder="e.g., 5 for 5%"
+                                           PlaceholderColor="{DynamicResource TertiaryTextColor}"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           Keyboard="Numeric"
+                                           FontSize="15"
+                                           BackgroundColor="Transparent"/>
+                                    <Label Grid.Column="1"
+                                           Text="%"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource AccentColor}"
+                                           VerticalOptions="Center"
+                                           Margin="10,0,0,0"/>
+                                </Grid>
+                            </Border>
                         </StackLayout>
 
-                        <Label Text="Most items use the default tax rate. Only use custom rate for special cases." 
-                               FontSize="10" TextColor="#999"/>
+                        <Label Text="💡 Most items use the default tax rate"
+                               FontSize="12"
+                               TextColor="{DynamicResource SecondaryTextColor}"/>
                     </StackLayout>
-                </Frame>
+                </Border>
 
                 <!-- Status -->
-                <Frame BackgroundColor="White" Padding="15" CornerRadius="10" HasShadow="True">
-                    <StackLayout Spacing="8">
-                        <Label Text="Status" FontSize="12" FontAttributes="Bold" TextColor="#333"/>
-                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                            <Switch Grid.Column="0" IsToggled="{Binding IsActive}"/>
-                            <Label Grid.Column="1" 
-                                   Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Active (Visible in menu)|Inactive (Hidden from menu)'}" 
-                                   VerticalOptions="Center" FontSize="14"/>
-                        </Grid>
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,2" 
+                                Radius="8" 
+                                Opacity="0.1"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="12">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="👁️" FontSize="20"/>
+                            <Label Text="Visibility Status" 
+                                   FontSize="16" 
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <Border BackgroundColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#E8F5E9|#FFEBEE'}"
+                               StrokeThickness="0"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15">
+                                <Frame Grid.Column="0"
+                                       WidthRequest="40"
+                                       HeightRequest="40"
+                                       CornerRadius="20"
+                                       Padding="0"
+                                       BackgroundColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#27AE60|#E74C3C'}"
+                                       HasShadow="False">
+                                    <Label Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter='✓|✕'}"
+                                           FontSize="20"
+                                           TextColor="White"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Frame>
+
+                                <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Active|Inactive'}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding IsActive, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#27AE60|#E74C3C'}"/>
+                                    <Label Text="{Binding IsActive, Converter={StaticResource BoolToTextConverter}, ConverterParameter='Visible in menu|Hidden from menu'}"
+                                           FontSize="12"
+                                           TextColor="{DynamicResource SecondaryTextColor}"/>
+                                </StackLayout>
+
+                                <Switch Grid.Column="2"
+                                        IsToggled="{Binding IsActive}"
+                                        OnColor="{DynamicResource SuccessColor}"
+                                        ThumbColor="White"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                        </Border>
                     </StackLayout>
-                </Frame>
+                </Border>
 
             </StackLayout>
         </ScrollView>
 
         <!-- Action Buttons -->
-        <Grid Grid.Row="2" BackgroundColor="White" Padding="15,10" 
-              ColumnDefinitions="*,*" ColumnSpacing="10">
+        <Border Grid.Row="2"
+                BackgroundColor="{DynamicResource CardBackgroundColor}"
+                StrokeThickness="0">
+            <Border.Shadow>
+                <Shadow Brush="{DynamicResource ShadowColor}" 
+                        Offset="0,-4" 
+                        Radius="10" 
+                        Opacity="0.1"/>
+            </Border.Shadow>
 
-            <Button Grid.Column="0" Text="Cancel" 
-                    BackgroundColor="#95A5A6" TextColor="White"
-                    Command="{Binding CancelCommand}"
-                    FontSize="14" Padding="15,10"/>
-            <Button Grid.Column="1" Text="{Binding SaveButtonText}" 
-                    BackgroundColor="#27AE60" TextColor="White"
-                    Command="{Binding SaveCommand}"
-                    FontSize="14" FontAttributes="Bold" Padding="15,10"/>
+            <Grid Padding="20,15" ColumnDefinitions="*,*" ColumnSpacing="15">
+                <Button Grid.Column="0"
+                        Text="Cancel"
+                        BackgroundColor="Transparent"
+                        TextColor="{DynamicResource SecondaryTextColor}"
+                        BorderColor="{DynamicResource BorderColor}"
+                        BorderWidth="2"
+                        CornerRadius="12"
+                        FontSize="16"
+                        Padding="0,15"
+                        Command="{Binding CancelCommand}"/>
+
+                <Button Grid.Column="1"
+                        Text="{Binding SaveButtonText}"
+                        TextColor="White"
+                        CornerRadius="12"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Padding="0,15"
+                        Command="{Binding SaveCommand}">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#667eea" Offset="0.0" />
+                            <GradientStop Color="#764ba2" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <Button.Shadow>
+                        <Shadow Brush="#667eea" 
+                                Offset="0,4" 
+                                Radius="12" 
+                                Opacity="0.4"/>
+                    </Button.Shadow>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Loading Overlay -->
+        <Grid Grid.Row="0" Grid.RowSpan="3"
+              IsVisible="{Binding IsLoading}"
+              BackgroundColor="#80000000">
+            <Border WidthRequest="120"
+                   HeightRequest="120"
+                   BackgroundColor="{DynamicResource CardBackgroundColor}"
+                   StrokeThickness="0"
+                   StrokeShape="RoundRectangle 20">
+                <StackLayout Spacing="15" 
+                            HorizontalOptions="Center" 
+                            VerticalOptions="Center">
+                    <ActivityIndicator IsRunning="True"
+                                     Color="{DynamicResource PrimaryColor}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"/>
+                    <Label Text="Saving..."
+                           FontSize="14"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Border>
         </Grid>
+
     </Grid>
 </ContentPage>

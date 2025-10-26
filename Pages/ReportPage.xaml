@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Cashere.Pages.ReportPage"
+             xmlns:charts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header with Gradient -->
+        <Border Grid.Row="0"
+                StrokeThickness="0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#667eea" Offset="0.0" />
+                    <GradientStop Color="#764ba2" Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Shadow>
+                <Shadow Brush="{DynamicResource ShadowColor}" 
+                        Offset="0,4" 
+                        Radius="10" 
+                        Opacity="0.3"/>
+            </Border.Shadow>
+
+            <Grid Padding="20,15" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="15">
+                <Frame Grid.Column="0"
+                       WidthRequest="45"
+                       HeightRequest="45"
+                       CornerRadius="23"
+                       Padding="0"
+                       BackgroundColor="#FFFFFF30"
+                       HasShadow="False">
+                    <Label Text="📊"
+                           FontSize="24"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+
+                <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                    <Label Text="Finance Dashboard"
+                           FontSize="22"
+                           FontAttributes="Bold"
+                           TextColor="White"/>
+                    <Label Text="Real-time sales analytics and insights"
+                           FontSize="12"
+                           TextColor="#FFFFFF90"/>
+                </StackLayout>
+
+                <Button Grid.Column="2"
+                        Text="🔄"
+                        FontSize="20"
+                        BackgroundColor="#FFFFFF30"
+                        TextColor="White"
+                        BorderWidth="2"
+                        BorderColor="#FFFFFF50"
+                        CornerRadius="20"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Command="{Binding RefreshCommand}"/>
+
+                <Button Grid.Column="3"
+                        Text="← Back"
+                        BackgroundColor="#FFFFFF30"
+                        TextColor="White"
+                        BorderWidth="2"
+                        BorderColor="#FFFFFF50"
+                        CornerRadius="20"
+                        Padding="15,8"
+                        FontSize="14"
+                        Command="{Binding BackCommand}"/>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollView Grid.Row="1" Padding="20">
+            <StackLayout Spacing="20">
+
+                <!-- Date Selector -->
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,2" 
+                                Radius="8" 
+                                Opacity="0.1"/>
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto" ColumnSpacing="10">
+                        <Label Grid.Column="0"
+                               Text="📅"
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="Select Period"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               VerticalOptions="Center"/>
+
+                        <Border Grid.Column="2"
+                               BackgroundColor="{Binding IsTodaySelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Transparent'}"
+                               Stroke="{Binding IsTodaySelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:BorderColor'}"
+                               StrokeThickness="2"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectPeriodCommand}" 
+                                                     CommandParameter="Today"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Today"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="{Binding IsTodaySelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='White|Dynamic:PrimaryTextColor'}"/>
+                        </Border>
+
+                        <Border Grid.Column="3"
+                               BackgroundColor="{Binding IsWeekSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Transparent'}"
+                               Stroke="{Binding IsWeekSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:BorderColor'}"
+                               StrokeThickness="2"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectPeriodCommand}" 
+                                                     CommandParameter="Week"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="This Week"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="{Binding IsWeekSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='White|Dynamic:PrimaryTextColor'}"/>
+                        </Border>
+
+                        <Border Grid.Column="4"
+                               BackgroundColor="{Binding IsMonthSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Transparent'}"
+                               Stroke="{Binding IsMonthSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='#667eea|Dynamic:BorderColor'}"
+                               StrokeThickness="2"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectPeriodCommand}" 
+                                                     CommandParameter="Month"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="This Month"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="{Binding IsMonthSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='White|Dynamic:PrimaryTextColor'}"/>
+                        </Border>
+
+                        <Border Grid.Column="5"
+                               BackgroundColor="Transparent"
+                               Stroke="{DynamicResource BorderColor}"
+                               StrokeThickness="2"
+                               StrokeShape="RoundRectangle 10"
+                               Padding="15,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SelectCustomDateCommand}"/>
+                            </Border.GestureRecognizers>
+                            <Label Text="Custom"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Summary Cards -->
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="15">
+                    <!-- Total Revenue -->
+                    <Border Grid.Column="0"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="20">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#11998e" Offset="0.0" />
+                                <GradientStop Color="#38ef7d" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Shadow>
+                            <Shadow Brush="#11998e" 
+                                    Offset="0,8" 
+                                    Radius="20" 
+                                    Opacity="0.3"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="10">
+                            <Label Text="💰" FontSize="32" HorizontalOptions="Start"/>
+                            <Label Text="Total Revenue"
+                                   FontSize="13"
+                                   TextColor="#FFFFFFCC"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalRevenue, StringFormat='Rp {0:N0}'}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label Text="{Binding TotalTransactions, StringFormat='{0} orders'}"
+                                   FontSize="12"
+                                   TextColor="#FFFFFF99"/>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- Cash -->
+                    <Border Grid.Column="1"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="20">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#667eea" Offset="0.0" />
+                                <GradientStop Color="#764ba2" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Shadow>
+                            <Shadow Brush="#667eea" 
+                                    Offset="0,8" 
+                                    Radius="20" 
+                                    Opacity="0.3"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="10">
+                            <Label Text="💵" FontSize="32" HorizontalOptions="Start"/>
+                            <Label Text="Cash Payments"
+                                   FontSize="13"
+                                   TextColor="#FFFFFFCC"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalCash, StringFormat='Rp {0:N0}'}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label Text="{Binding CashPercentage, StringFormat='{0:F1}% of total'}"
+                                   FontSize="12"
+                                   TextColor="#FFFFFF99"/>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- QRIS -->
+                    <Border Grid.Column="2"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="20">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#f093fb" Offset="0.0" />
+                                <GradientStop Color="#f5576c" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Shadow>
+                            <Shadow Brush="#f093fb" 
+                                    Offset="0,8" 
+                                    Radius="20" 
+                                    Opacity="0.3"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="10">
+                            <Label Text="📱" FontSize="32" HorizontalOptions="Start"/>
+                            <Label Text="QRIS Payments"
+                                   FontSize="13"
+                                   TextColor="#FFFFFFCC"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalQRIS, StringFormat='Rp {0:N0}'}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label Text="{Binding QRISPercentage, StringFormat='{0:F1}% of total'}"
+                                   FontSize="12"
+                                   TextColor="#FFFFFF99"/>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- Tax Collected -->
+                    <Border Grid.Column="3"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="20">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#fa709a" Offset="0.0" />
+                                <GradientStop Color="#fee140" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Shadow>
+                            <Shadow Brush="#fa709a" 
+                                    Offset="0,8" 
+                                    Radius="20" 
+                                    Opacity="0.3"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="10">
+                            <Label Text="🧾" FontSize="32" HorizontalOptions="Start"/>
+                            <Label Text="Tax Collected"
+                                   FontSize="13"
+                                   TextColor="#FFFFFFCC"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding TotalTax, StringFormat='Rp {0:N0}'}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   TextColor="White"/>
+                            <Label Text="{Binding ItemsSold, StringFormat='{0} items sold'}"
+                                   FontSize="12"
+                                   TextColor="#FFFFFF99"/>
+                        </StackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Charts Row -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+                    <!-- Payment Method Distribution -->
+                    <Border Grid.Column="0"
+                           BackgroundColor="{DynamicResource CardBackgroundColor}"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="25">
+                        <Border.Shadow>
+                            <Shadow Brush="{DynamicResource ShadowColor}" 
+                                    Offset="0,4" 
+                                    Radius="12" 
+                                    Opacity="0.15"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="20">
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="💳" FontSize="24"/>
+                                <Label Text="Payment Methods"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+
+                            <charts:ChartView Chart="{Binding PaymentMethodChart}"
+                                            HeightRequest="250"/>
+
+                            <StackLayout Spacing="12">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Border Grid.Column="0"
+                                           WidthRequest="30"
+                                           HeightRequest="30"
+                                           StrokeThickness="0"
+                                           StrokeShape="RoundRectangle 8"
+                                           BackgroundColor="#667eea"/>
+                                    <Label Grid.Column="1"
+                                           Text="Cash"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="2"
+                                           Text="{Binding TotalCash, StringFormat='Rp {0:N0}'}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#667eea"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Border Grid.Column="0"
+                                           WidthRequest="30"
+                                           HeightRequest="30"
+                                           StrokeThickness="0"
+                                           StrokeShape="RoundRectangle 8"
+                                           BackgroundColor="#f093fb"/>
+                                    <Label Grid.Column="1"
+                                           Text="QRIS"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}"
+                                           VerticalOptions="Center"/>
+                                    <Label Grid.Column="2"
+                                           Text="{Binding TotalQRIS, StringFormat='Rp {0:N0}'}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           TextColor="#f093fb"
+                                           VerticalOptions="Center"/>
+                                </Grid>
+                            </StackLayout>
+                        </StackLayout>
+                    </Border>
+
+                    <!-- Sales Trend -->
+                    <Border Grid.Column="1"
+                           BackgroundColor="{DynamicResource CardBackgroundColor}"
+                           StrokeThickness="0"
+                           StrokeShape="RoundRectangle 15"
+                           Padding="25">
+                        <Border.Shadow>
+                            <Shadow Brush="{DynamicResource ShadowColor}" 
+                                    Offset="0,4" 
+                                    Radius="12" 
+                                    Opacity="0.15"/>
+                        </Border.Shadow>
+
+                        <StackLayout Spacing="20">
+                            <HorizontalStackLayout Spacing="10">
+                                <Label Text="📈" FontSize="24"/>
+                                <Label Text="Sales Trend"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{DynamicResource PrimaryTextColor}"
+                                       VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+
+                            <charts:ChartView Chart="{Binding SalesTrendChart}"
+                                            HeightRequest="250"/>
+
+                            <Label Text="Last 7 days performance"
+                                   FontSize="13"
+                                   TextColor="{DynamicResource SecondaryTextColor}"
+                                   HorizontalTextAlignment="Center"/>
+                        </StackLayout>
+                    </Border>
+                </Grid>
+
+                <!-- Top Selling Items -->
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="25">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,4" 
+                                Radius="12" 
+                                Opacity="0.15"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="20">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="🏆" FontSize="24"/>
+                            <Label Text="Top Selling Items"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <CollectionView ItemsSource="{Binding TopSellingItems}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,12"
+                                           BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                           StrokeThickness="0"
+                                           StrokeShape="RoundRectangle 12"
+                                           Padding="15">
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="15">
+                                            <!-- Rank Badge -->
+                                            <Border Grid.Column="0"
+                                                   WidthRequest="35"
+                                                   HeightRequest="35"
+                                                   StrokeThickness="0"
+                                                   StrokeShape="RoundRectangle 18">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Color="#667eea" Offset="0.0" />
+                                                        <GradientStop Color="#764ba2" Offset="1.0" />
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Label Text="{Binding Rank}"
+                                                       FontSize="16"
+                                                       FontAttributes="Bold"
+                                                       TextColor="White"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Icon -->
+                                            <Label Grid.Column="1"
+                                                   Text="🍽️"
+                                                   FontSize="28"
+                                                   VerticalOptions="Center"/>
+
+                                            <!-- Item Info -->
+                                            <StackLayout Grid.Column="2" VerticalOptions="Center" Spacing="4">
+                                                <Label Text="{Binding ItemName}"
+                                                       FontSize="15"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                                                <Label Text="{Binding Category}"
+                                                       FontSize="12"
+                                                       TextColor="{DynamicResource SecondaryTextColor}"/>
+                                            </StackLayout>
+
+                                            <!-- Quantity -->
+                                            <Border Grid.Column="3"
+                                                   BackgroundColor="#11998e"
+                                                   StrokeThickness="0"
+                                                   StrokeShape="RoundRectangle 10"
+                                                   Padding="12,6"
+                                                   VerticalOptions="Center">
+                                                <Label Text="{Binding QuantitySold, StringFormat='{0} sold'}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       TextColor="White"/>
+                                            </Border>
+
+                                            <!-- Revenue -->
+                                            <Label Grid.Column="4"
+                                                   Text="{Binding Revenue, StringFormat='Rp {0:N0}'}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{DynamicResource SuccessColor}"
+                                                   VerticalOptions="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                            <CollectionView.EmptyView>
+                                <StackLayout Padding="40" 
+                                            HorizontalOptions="Center" 
+                                            VerticalOptions="Center">
+                                    <Label Text="🏆" 
+                                           FontSize="60" 
+                                           HorizontalOptions="Center"
+                                           Opacity="0.3"/>
+                                    <Label Text="No sales data yet" 
+                                           FontSize="16" 
+                                           TextColor="{DynamicResource SecondaryTextColor}"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+                    </StackLayout>
+                </Border>
+
+                <!-- Hourly Sales Distribution -->
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="25">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,4" 
+                                Radius="12" 
+                                Opacity="0.15"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="20">
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="⏰" FontSize="24"/>
+                            <Label Text="Hourly Sales Distribution"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <charts:ChartView Chart="{Binding HourlySalesChart}"
+                                        HeightRequest="250"/>
+
+                        <Label Text="Peak hours: 12:00 - 14:00 and 18:00 - 20:00"
+                               FontSize="13"
+                               TextColor="{DynamicResource SecondaryTextColor}"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                </Border>
+
+                <!-- Recent Transactions -->
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="25">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}" 
+                                Offset="0,4" 
+                                Radius="12" 
+                                Opacity="0.15"/>
+                    </Border.Shadow>
+
+                    <StackLayout Spacing="20">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                            <Label Grid.Column="0"
+                                   Text="📝"
+                                   FontSize="24"
+                                   VerticalOptions="Center"/>
+                            <Label Grid.Column="1"
+                                   Text="Recent Transactions"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{DynamicResource PrimaryTextColor}"
+                                   VerticalOptions="Center"/>
+                            <Border Grid.Column="2"
+                                   BackgroundColor="Transparent"
+                                   Stroke="#667eea"
+                                   StrokeThickness="2"
+                                   StrokeShape="RoundRectangle 10"
+                                   Padding="12,6">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ViewAllTransactionsCommand}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="View All →"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="#667eea"/>
+                            </Border>
+                        </Grid>
+
+                        <CollectionView ItemsSource="{Binding RecentTransactions}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,12"
+                                           BackgroundColor="{DynamicResource PageBackgroundColor}"
+                                           StrokeThickness="0"
+                                           StrokeShape="RoundRectangle 12"
+                                           Padding="15">
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="15">
+                                            <!-- Payment Method Icon -->
+                                            <Border Grid.Column="0"
+                                                   WidthRequest="50"
+                                                   HeightRequest="50"
+                                                   StrokeThickness="0"
+                                                   StrokeShape="RoundRectangle 25"
+                                                   BackgroundColor="{Binding PaymentMethod, Converter={StaticResource PaymentMethodToColorConverter}}">
+                                                <Label Text="{Binding PaymentMethod, Converter={StaticResource PaymentMethodToIconConverter}}"
+                                                       FontSize="24"
+                                                       TextColor="White"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"/>
+                                            </Border>
+
+                                            <!-- Transaction Info -->
+                                            <StackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                                <Label Text="{Binding OrderNumber}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{DynamicResource PrimaryTextColor}"/>
+                                                <Label Text="{Binding TransactionDate, StringFormat='{0:dd/MM/yyyy HH:mm}'}"
+                                                       FontSize="12"
+                                                       TextColor="{DynamicResource SecondaryTextColor}"/>
+                                                <Label Text="{Binding ItemCount, StringFormat='{0} items'}"
+                                                       FontSize="11"
+                                                       TextColor="{DynamicResource TertiaryTextColor}"/>
+                                            </StackLayout>
+
+                                            <!-- Amount -->
+                                            <StackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End" Spacing="4">
+                                                <Label Text="{Binding OrderTotal, StringFormat='Rp {0:N0}'}"
+                                                       FontSize="15"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{DynamicResource SuccessColor}"/>
+                                                <Label Text="{Binding TaxAmount, StringFormat='Tax: Rp {0:N0}'}"
+                                                       FontSize="11"
+                                                       TextColor="{DynamicResource AccentColor}"/>
+                                            </StackLayout>
+
+                                            <!-- Status Badge -->
+                                            <Border Grid.Column="3"
+                                                   BackgroundColor="{Binding Status, Converter={StaticResource StatusToColorConverter}}"
+                                                   StrokeThickness="0"
+                                                   StrokeShape="RoundRectangle 8"
+                                                   Padding="10,5"
+                                                   VerticalOptions="Center">
+                                                <Label Text="{Binding Status}"
+                                                       FontSize="11"
+                                                       FontAttributes="Bold"
+                                                       TextColor="White"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                            <CollectionView.EmptyView>
+                                <StackLayout Padding="40" 
+                                            HorizontalOptions="Center" 
+                                            VerticalOptions="Center">
+                                    <Label Text="📝" 
+                                           FontSize="60" 
+                                           HorizontalOptions="Center"
+                                           Opacity="0.3"/>
+                                    <Label Text="No transactions yet" 
+                                           FontSize="16" 
+                                           TextColor="{DynamicResource SecondaryTextColor}"
+                                           HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </CollectionView.EmptyView>
+                        </CollectionView>
+                    </StackLayout>
+                </Border>
+                <!-- Export Options -->
+                <Border BackgroundColor="{DynamicResource CardBackgroundColor}"
+                       StrokeThickness="0"
+                       StrokeShape="RoundRectangle 15"
+                       Padding="20">
+                    <Border.Shadow>
+                        <Shadow Brush="{DynamicResource ShadowColor}"
+                                 Offset="0,4" 
+                                Radius="12" 
+                                Opacity="0.15"/>
+                    </Border.Shadow>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="15">
+                        <Label Grid.Column="0"
+                               Text="📥"
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="Export Reports"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{DynamicResource PrimaryTextColor}"
+                               VerticalOptions="Center"/>
+
+                        <Button Grid.Column="2"
+                                Text="📊 Excel"
+                                BackgroundColor="{DynamicResource SuccessColor}"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Padding="20,10"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                Command="{Binding ExportToExcelCommand}">
+                            <Button.Shadow>
+                                <Shadow Brush="{DynamicResource SuccessColor}" 
+                                        Offset="0,4" 
+                                        Radius="10" 
+                                        Opacity="0.3"/>
+                            </Button.Shadow>
+                        </Button>
+
+                        <Button Grid.Column="3"
+                                Text="📄 Print"
+                                BackgroundColor="{DynamicResource PrimaryColor}"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Padding="20,10"
+                                FontSize="14"
+                                FontAttributes="Bold"
+                                Command="{Binding PrintReportCommand}">
+                            <Button.Shadow>
+                                <Shadow Brush="{DynamicResource PrimaryColor}" 
+                                        Offset="0,4" 
+                                        Radius="10" 
+                                        Opacity="0.3"/>
+                            </Button.Shadow>
+                        </Button>
+                    </Grid>
+                </Border>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Loading Overlay -->
+        <Grid Grid.Row="0" Grid.RowSpan="2"
+              IsVisible="{Binding IsLoading}"
+              BackgroundColor="#80000000">
+            <Border WidthRequest="120"
+                   HeightRequest="120"
+                   BackgroundColor="{DynamicResource CardBackgroundColor}"
+                   StrokeThickness="0"
+                   StrokeShape="RoundRectangle 20">
+                <StackLayout Spacing="15" 
+                            HorizontalOptions="Center" 
+                            VerticalOptions="Center">
+                    <ActivityIndicator IsRunning="True"
+                                     Color="{DynamicResource PrimaryColor}"
+                                     WidthRequest="40"
+                                     HeightRequest="40"/>
+                    <Label Text="Loading..."
+                           FontSize="14"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </Border>
+        </Grid>
+
+    </Grid>
+</ContentPage>
