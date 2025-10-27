@@ -13,7 +13,12 @@ namespace Cashere.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
-        private readonly string _baseUrl = "https://localhost:7102/api";
+        // ============ Windows Desktop API Host ============
+        // private readonly string _baseUrl = "https://localhost:7102/api";
+        // ============ LAN API Host ============
+        private readonly string _baseUrl = "https://192.168.1.5:7103/api";
+
+
         private string _authToken;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
