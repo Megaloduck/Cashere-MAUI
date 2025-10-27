@@ -95,7 +95,7 @@ namespace Cashere.PageModels
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public AddEditMenuItemPageModel(MenuItemModel itemToEdit = null)
+        public AddEditMenuItemPageModel(MenuItemModel? itemToEdit = null)
         {
             _apiService = new ApiService();
             _itemToEdit = itemToEdit;

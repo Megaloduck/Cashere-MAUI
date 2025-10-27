@@ -360,15 +360,24 @@ namespace Cashere.PageModels
         }
         private async void OnCheckout()
         {
-            if (!CartItems.Any())
+            try
             {
-                await Application.Current!.MainPage!.DisplayAlert("Empty Cart", "Please add items before checkout", "OK");
-                return;
-            }
+                if (!CartItems.Any())
+                {
+                    await Application.Current!.MainPage!.DisplayAlert("Empty Cart", "Please add items before checkout", "OK");
+                    return;
+                }
 
-            // Navigate to checkout page
-            await Shell.Current.Navigation.PushAsync(new CheckoutPage(CartItems.ToList()));
+                // ✅ Safe navigation with crash logging
+                await Shell.Current.Navigation.PushAsync(new CheckoutPage(CartItems.ToList()));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ OnCheckout crashed: " + ex);
+                await Application.Current!.MainPage!.DisplayAlert("Error", ex.ToString(), "OK");
+            }
         }
+
 
         public void RecalculateCartTotals()
         {
@@ -388,7 +397,7 @@ namespace Cashere.PageModels
             set { _isLoading = value; OnPropertyChanged(); }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {

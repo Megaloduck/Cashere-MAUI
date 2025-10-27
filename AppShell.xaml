@@ -9,6 +9,17 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Cashere">
 
+    <!-- New Pre-Login Pages -->
+    <ShellContent
+        ContentTemplate="{DataTemplate pages:ServerSetupPage}"
+        Route="serversetup" />
+
+    <ShellContent
+        Title="Server Connect"
+        ContentTemplate="{DataTemplate pages:ServerConnectionPage}"
+        Route="serverconnect" />
+
+    <!-- Core App Pages -->
     <ShellContent
         ContentTemplate="{DataTemplate pages:LoginPage}"
         Route="login" />

@@ -126,7 +126,7 @@ namespace Cashere.PageModels
         public ICommand PreviewReceiptCommand { get; }
         public ICommand SelectPaymentMethodCommand { get; }
 
-        public CheckoutPageModel(List<CartItemModel> cartItems = null)
+        public CheckoutPageModel(List<CartItemModel> cartItems)
         {
             _apiService = new ApiService();
             CartItems = new ObservableCollection<CartItemModel>(cartItems ?? new List<CartItemModel>());

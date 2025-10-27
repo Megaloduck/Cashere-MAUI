@@ -15,29 +15,6 @@
             </BoxView.Background>
         </BoxView>
 
-        <!-- Decorative Circles -->
-        <Grid>
-            <Ellipse Fill="#FFFFFF20" 
-                     WidthRequest="300" 
-                     HeightRequest="300"
-                     HorizontalOptions="Start"
-                     VerticalOptions="Start"
-                     Margin="-100,-100,0,0"/>
-
-            <Ellipse Fill="#FFFFFF15" 
-                     WidthRequest="200" 
-                     HeightRequest="200"
-                     HorizontalOptions="End"
-                     VerticalOptions="End"
-                     Margin="0,0,-50,-50"/>
-
-            <Ellipse Fill="#FFFFFF10" 
-                     WidthRequest="150" 
-                     HeightRequest="150"
-                     HorizontalOptions="Center"
-                     VerticalOptions="Start"
-                     Margin="0,-50,0,0"/>
-        </Grid>
 
         <!-- Main Content -->
         <ScrollView VerticalOptions="Center" HorizontalOptions="Center">

@@ -26,7 +26,7 @@ namespace Cashere.Services
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private ThemeService()
         {

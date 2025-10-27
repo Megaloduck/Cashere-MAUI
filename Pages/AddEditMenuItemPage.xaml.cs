@@ -7,7 +7,7 @@ public partial class AddEditMenuItemPage : ContentPage
 {
     private readonly AddEditMenuItemPageModel _pageModel;
 
-    public AddEditMenuItemPage(MenuItemModel itemToEdit = null)
+    public AddEditMenuItemPage(MenuItemModel? itemToEdit = null)
     {
         InitializeComponent();
         _pageModel = new AddEditMenuItemPageModel(itemToEdit);

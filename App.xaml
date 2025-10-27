@@ -17,13 +17,16 @@
             
             <!-- Converters -->
             <converters:BoolToColorConverter x:Key="BoolToColorConverter"/>
+            <converters:BoolToShadowConverter x:Key="BoolToShadowConverter" />
             <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
             <converters:BoolToCheckConverter x:Key="BoolToCheckConverter"/>
             <converters:BoolToTextConverter x:Key="BoolToTextConverter"/>
-            <converters:ThemeIconConverter x:Key="ThemeIconConverter"/>
+            
             <converters:PaymentMethodToColorConverter x:Key="PaymentMethodToColorConverter"/>
             <converters:PaymentMethodToIconConverter x:Key="PaymentMethodToIconConverter"/>
+
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+            <converters:ThemeIconConverter x:Key="ThemeIconConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

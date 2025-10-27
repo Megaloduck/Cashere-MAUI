@@ -27,16 +27,6 @@ namespace Cashere.PageModels
             set { _password = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsNotLoading)); }
         }
 
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set
-            {
-                _isLoading = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(IsNotLoading));
-            }
-        }
 
         public bool IsNotLoading => !IsLoading && !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
 
