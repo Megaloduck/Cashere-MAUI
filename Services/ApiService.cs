@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json; 
+using System.Text.Json;
 using System.Threading.Tasks;
-using Cashere.Services;
 
 namespace Cashere.Services
 {
@@ -17,8 +16,7 @@ namespace Cashere.Services
         // ============ Windows Desktop API Host ============
         // private readonly string _baseUrl = "https://localhost:7102/api";
         // ============ LAN API Host ============
-        // private readonly string _baseUrl = "https://192.168.1.6:7103/api";
-        private readonly string _baseUrl;
+        private readonly string _baseUrl = "https://192.168.1.6:7103/api";
 
 
         private string _authToken;
@@ -35,15 +33,6 @@ namespace Cashere.Services
 
             _httpClient = new HttpClient(handler);
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
-
-            _baseUrl = ApiConfig.GetBaseUrl();
-        }
-
-        // ========== API CONFIGURATION ============
-        public async Task<HttpResponseMessage> GetSomethingAsync()
-        {
-            using var client = new HttpClient();
-            return await client.GetAsync($"{_baseUrl}/your-endpoint");
         }
 
         // ============ AUTHENTICATION ============
@@ -83,6 +72,7 @@ namespace Cashere.Services
                 throw new Exception($"Login error: {ex.Message}", ex);
             }
         }
+
 
         public async Task<bool> LogoutAsync()
         {
@@ -507,7 +497,7 @@ namespace Cashere.Services
         }
 
         // ============ ADMIN - MENU ITEMS ============
-        public async Task<MenuItemResponse> CreateMenuItemAsync( int categoryId, string name, string description, decimal price, bool isTaxable, decimal? customTaxRate, int displayOrder)
+        public async Task<MenuItemResponse> CreateMenuItemAsync(int categoryId, string name, string description, decimal price, bool isTaxable, decimal? customTaxRate, int displayOrder)
         {
             try
             {
@@ -543,7 +533,7 @@ namespace Cashere.Services
             }
         }
 
-        public async Task<MenuItemResponse> UpdateMenuItemAsync( int id, int categoryId, string name, string description, decimal price, bool isTaxable, decimal? customTaxRate, bool isActive, int displayOrder)
+        public async Task<MenuItemResponse> UpdateMenuItemAsync(int id, int categoryId, string name, string description, decimal price, bool isTaxable, decimal? customTaxRate, bool isActive, int displayOrder)
         {
             try
             {

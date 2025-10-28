@@ -13,7 +13,7 @@ namespace Cashere
 
             // Register routes
             Routing.RegisterRoute("login", typeof(LoginPage));
-           // Routing.RegisterRoute("main", typeof(MainPage));
+            // Routing.RegisterRoute("main", typeof(MainPage));
             Routing.RegisterRoute("checkout", typeof(CheckoutPage));
             Routing.RegisterRoute("admin", typeof(AdminPanelPage));
             Routing.RegisterRoute("dashboard", typeof(ReportPage));

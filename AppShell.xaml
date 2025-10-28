@@ -33,5 +33,5 @@
         ContentTemplate="{DataTemplate pages:CheckoutPage}"
         Route="checkout"
         IsVisible="False" />
-    
+
 </Shell>

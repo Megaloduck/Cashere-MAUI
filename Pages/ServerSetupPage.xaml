@@ -16,7 +16,7 @@
                    TextColor="{DynamicResource SecondaryTextColor}"
                    Opacity="0.8" />
         </VerticalStackLayout>
-        
+
         <!-- Main Content -->
         <ScrollView Grid.Row="1" Padding="20" >
             <VerticalStackLayout Spacing="24">
@@ -122,7 +122,7 @@
 
         </ScrollView>
 
-       
+
         <!-- Footer Action Buttons -->
         <VerticalStackLayout Grid.Row="2" Padding="20" Spacing="12">
             <Button Text="🚀 Start Server"
@@ -134,7 +134,7 @@
                     FontSize="16"
                     HeightRequest="56"
                     x:Name="StartButton" />
-           
+
         </VerticalStackLayout>
     </Grid>
 

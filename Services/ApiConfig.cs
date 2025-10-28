@@ -10,16 +10,56 @@ namespace Cashere.Services
 {
     public static class ApiConfig
     {
-        public static string GetBaseUrl(int port = 7103)
+        public static string GetBaseUrl()
         {
-            string? ip = Dns.GetHostAddresses(Dns.GetHostName())
-                .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)?
-                .ToString();
+            // Check for saved configuration first
+            if (Preferences.ContainsKey("ServerHostIP"))
+            {
+                string savedIp = Preferences.Get("ServerHostIP", "localhost");
+                int port = Preferences.Get("ServerPort", 7102);
+                return $"http://{savedIp}:{port}/api";
+            }
 
-            if (string.IsNullOrEmpty(ip))
-                ip = "localhost"; // fallback if IP can’t be resolved
+            // Auto-detect for Windows
+            if (DeviceInfo.Platform == DevicePlatform.WinUI)
+            {
+                string ip = GetLocalIPAddress();
+                int port = 7102;
+                return $"http://{ip}:{port}/api";
+            }
 
-            return $"https://{ip}:{port}/api";
+            // Fallback for Android (use a common local IP pattern)
+            // This will be updated when server starts on Windows
+            return "http://192.168.1.6:7102/api";
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            try
+            {
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (var ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        return ip.ToString();
+                    }
+                }
+            }
+            catch { }
+
+            return "localhost";
+        }
+
+        public static void SaveServerConfig(string ip, int port)
+        {
+            Preferences.Set("ServerHostIP", ip);
+            Preferences.Set("ServerPort", port);
+        }
+
+        public static bool IsConfigured()
+        {
+            return Preferences.ContainsKey("ServerHostIP");
         }
     }
 }
