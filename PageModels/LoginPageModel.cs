@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using System.Net.Http;
 
 namespace Cashere.PageModels
 {
@@ -11,9 +13,25 @@ namespace Cashere.PageModels
         private readonly ApiService _apiService;
         private string _username;
         private string _password;
-        private bool _isLoading;
         private bool _rememberMe;
         private bool _isPasswordHidden = true;
+        private string _apiStatus = "Checking server...";
+        private Color _apiStatusColor = Colors.Gray;
+
+        public bool IsWindows => DeviceInfo.Platform == DevicePlatform.WinUI;
+        public bool IsAndroid => DeviceInfo.Platform == DevicePlatform.Android;
+
+        public string ApiStatus
+        {
+            get => _apiStatus;
+            set { _apiStatus = value; OnPropertyChanged(); }
+        }
+
+        public Color ApiStatusColor
+        {
+            get => _apiStatusColor;
+            set { _apiStatusColor = value; OnPropertyChanged(); }
+        }
 
         public string Username
         {
@@ -26,7 +44,6 @@ namespace Cashere.PageModels
             get => _password;
             set { _password = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsNotLoading)); }
         }
-
 
         public bool IsNotLoading => !IsLoading && !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
 
@@ -58,21 +75,51 @@ namespace Cashere.PageModels
             LoginCommand = new Command(OnLogin);
             TogglePasswordVisibilityCommand = new Command(OnTogglePasswordVisibility);
             ForgotPasswordCommand = new Command(OnForgotPassword);
-            QuickLoginCommand = new Command<string>(OnQuickLogin);
             ContactAdminCommand = new Command(OnContactAdmin);
             ToggleThemeCommand = new Command(OnToggleTheme);
 
             ThemeService.Instance.PropertyChanged += OnThemeChanged;
 
             LoadSavedCredentials();
+
+            if (IsAndroid)
+                _ = CheckApiStatusAsync();
         }
 
         private void LoadSavedCredentials()
         {
             RememberMe = Preferences.Get("RememberMe", false);
             if (RememberMe)
-            {
                 Username = Preferences.Get("SavedUsername", string.Empty);
+        }
+
+        private async Task CheckApiStatusAsync()
+        {
+            string hostIp = ("ServerHostIP");
+            int port = Preferences.Get("ServerPort", 7102);
+            string url = $"http://{hostIp}:{port}/api/health";
+
+            try
+            {
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(2);
+                var response = await client.GetAsync(url);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    ApiStatus = "Server Online";
+                    ApiStatusColor = Colors.Green;
+                }
+                else
+                {
+                    ApiStatus = "Server Offline";
+                    ApiStatusColor = Colors.Red;
+                }
+            }
+            catch
+            {
+                ApiStatus = "Server Offline";
+                ApiStatusColor = Colors.Red;
             }
         }
 
@@ -89,6 +136,18 @@ namespace Cashere.PageModels
 
         private async void OnLogin()
         {
+            if (IsAndroid)
+            {
+                if (ApiStatus != "Server Online")
+                {
+                    await Application.Current!.MainPage!.DisplayAlert(
+                        "Server Offline",
+                        "The API server is not reachable. Please make sure your PC host is running the server.",
+                        "OK");
+                    return;
+                }
+            }
+
             if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
                 await Application.Current!.MainPage!.DisplayAlert(
@@ -123,10 +182,7 @@ namespace Cashere.PageModels
             }
             catch (Exception ex)
             {
-                await Application.Current!.MainPage!.DisplayAlert(
-                    "Login Failed",
-                    ex.Message,
-                    "OK");
+                await Application.Current!.MainPage!.DisplayAlert("Login Failed", ex.Message, "OK");
             }
             finally
             {
@@ -142,23 +198,6 @@ namespace Cashere.PageModels
                 "Forgot Password",
                 "Please contact your administrator to reset your password.",
                 "OK");
-        }
-
-        private async void OnQuickLogin(string mode)
-        {
-            if (mode == "demo")
-            {
-                Username = "demo";
-                Password = "demo123";
-            }
-            else if (mode == "guest")
-            {
-                Username = "guest";
-                Password = "guest123";
-            }
-
-            await Task.Delay(100);
-            OnLogin();
         }
 
         private async void OnContactAdmin()

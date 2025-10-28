@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json; 
 using System.Threading.Tasks;
+using Cashere.Services;
 
 namespace Cashere.Services
 {
@@ -16,7 +17,8 @@ namespace Cashere.Services
         // ============ Windows Desktop API Host ============
         // private readonly string _baseUrl = "https://localhost:7102/api";
         // ============ LAN API Host ============
-        private readonly string _baseUrl = "https://192.168.1.5:7103/api";
+        // private readonly string _baseUrl = "https://192.168.1.6:7103/api";
+        private readonly string _baseUrl;
 
 
         private string _authToken;
@@ -33,6 +35,15 @@ namespace Cashere.Services
 
             _httpClient = new HttpClient(handler);
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+            _baseUrl = ApiConfig.GetBaseUrl();
+        }
+
+        // ========== API CONFIGURATION ============
+        public async Task<HttpResponseMessage> GetSomethingAsync()
+        {
+            using var client = new HttpClient();
+            return await client.GetAsync($"{_baseUrl}/your-endpoint");
         }
 
         // ============ AUTHENTICATION ============
@@ -72,7 +83,6 @@ namespace Cashere.Services
                 throw new Exception($"Login error: {ex.Message}", ex);
             }
         }
-
 
         public async Task<bool> LogoutAsync()
         {

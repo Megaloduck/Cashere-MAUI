@@ -2,10 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Cashere.Pages.LoginPage"
-             BackgroundColor="{DynamicResource PageBackgroundColor}">
+             BackgroundColor="{DynamicResource PageBackgroundColor}"
+             x:DataType="pageModels:LoginPageModel"
+             xmlns:pageModels="clr-namespace:Cashere.PageModels">
 
-    <!-- Animated Background Gradient -->
     <Grid>
+        <!-- Animated Background Gradient -->
         <BoxView>
             <BoxView.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -15,25 +17,19 @@
             </BoxView.Background>
         </BoxView>
 
-
         <!-- Main Content -->
         <ScrollView VerticalOptions="Center" HorizontalOptions="Center">
             <Grid WidthRequest="450" Padding="20">
-
-                <!-- Login Card -->
                 <Border StrokeThickness="0"
                        StrokeShape="RoundRectangle 30"
                        BackgroundColor="{DynamicResource CardBackgroundColor}">
                     <Border.Shadow>
-                        <Shadow Brush="#40000000" 
-                                Offset="0,10" 
-                                Radius="30" 
-                                Opacity="0.5"/>
+                        <Shadow Brush="#40000000" Offset="0,10" Radius="30" Opacity="0.5"/>
                     </Border.Shadow>
 
                     <Grid RowDefinitions="Auto,*" Padding="0">
 
-                        <!-- Header Section with Gradient -->
+                        <!-- Header Section -->
                         <Border Grid.Row="0"
                                StrokeThickness="0"
                                StrokeShape="RoundRectangle 30,30,0,0"
@@ -46,60 +42,31 @@
                             </Border.Background>
 
                             <StackLayout Spacing="15">
-                                <!-- Logo -->
-                                <Border WidthRequest="80" 
-                                       HeightRequest="80" 
-                                       StrokeThickness="0"
+                                <Border WidthRequest="80" HeightRequest="80" StrokeThickness="0"
                                        StrokeShape="RoundRectangle 40"
                                        BackgroundColor="#FFFFFF30"
                                        HorizontalOptions="Center">
-                                    <Label Text="☕" 
-                                           FontSize="48" 
-                                           HorizontalOptions="Center" 
-                                           VerticalOptions="Center"/>
+                                    <Label Text="☕" FontSize="48" HorizontalOptions="Center" VerticalOptions="Center"/>
                                 </Border>
 
-                                <!-- Title -->
-                                <Label Text="Cashere POS" 
-                                       FontSize="32" 
-                                       FontAttributes="Bold" 
-                                       TextColor="White"
-                                       HorizontalTextAlignment="Center"/>
-
-                                <Label Text="Sign in to continue" 
-                                       FontSize="16" 
-                                       TextColor="#FFFFFF90"
-                                       HorizontalTextAlignment="Center"/>
+                                <Label Text="Cashere POS" FontSize="32" FontAttributes="Bold" TextColor="White" HorizontalTextAlignment="Center"/>
+                                <Label Text="Sign in to continue" FontSize="16" TextColor="#FFFFFF90" HorizontalTextAlignment="Center"/>
                             </StackLayout>
                         </Border>
 
                         <!-- Form Section -->
-                        <StackLayout Grid.Row="1" 
-                                    Padding="40,30,40,40" 
-                                    Spacing="25">
+                        <StackLayout Grid.Row="1" Padding="40,30,40,40" Spacing="25">
 
-                            <!-- Username Field -->
+                            <!-- Username -->
                             <StackLayout Spacing="8">
-                                <Label Text="Username" 
-                                       FontSize="14" 
-                                       FontAttributes="Bold"
-                                       TextColor="{DynamicResource PrimaryTextColor}"/>
-
+                                <Label Text="Username" FontSize="14" FontAttributes="Bold" TextColor="{DynamicResource PrimaryTextColor}"/>
                                 <Border BackgroundColor="{DynamicResource PageBackgroundColor}"
-                                       StrokeThickness="2"
-                                       Stroke="{DynamicResource BorderColor}"
-                                       StrokeShape="RoundRectangle 12">
-                                    <Grid ColumnDefinitions="Auto,*" 
-                                          Padding="15,0"
-                                          ColumnSpacing="10">
-                                        <Label Grid.Column="0" 
-                                               Text="👤" 
-                                               FontSize="20" 
-                                               VerticalOptions="Center"
-                                               Opacity="0.6"/>
+                                       StrokeThickness="2" Stroke="{DynamicResource BorderColor}" StrokeShape="RoundRectangle 12">
+                                    <Grid ColumnDefinitions="Auto,*" Padding="15,0" ColumnSpacing="10">
+                                        <Label Grid.Column="0" Text="👤" FontSize="20" VerticalOptions="Center" Opacity="0.6"/>
                                         <Entry Grid.Column="1"
                                                Text="{Binding Username}"
-                                               Placeholder="Enter your username" 
+                                               Placeholder="Enter your username"
                                                PlaceholderColor="{DynamicResource TertiaryTextColor}"
                                                TextColor="{DynamicResource PrimaryTextColor}"
                                                FontSize="15"
@@ -174,7 +141,7 @@
                             </Grid>
 
                             <!-- Login Button -->
-                            <Button Text="Sign In" 
+                            <Button Text="Sign In"
                                     FontSize="18"
                                     FontAttributes="Bold"
                                     TextColor="White"
@@ -189,49 +156,23 @@
                                         <GradientStop Color="#764ba2" Offset="1.0" />
                                     </LinearGradientBrush>
                                 </Button.Background>
-                                <Button.Shadow>
-                                    <Shadow Brush="#667eea" 
-                                            Offset="0,8" 
-                                            Radius="20" 
-                                            Opacity="0.5"/>
-                                </Button.Shadow>
                             </Button>
 
-                            <!-- Loading Indicator -->
-                            <Border IsVisible="{Binding IsLoading}"
-                                   BackgroundColor="#667eea"
-                                   StrokeThickness="0"
-                                   StrokeShape="RoundRectangle 12"
-                                   Padding="0,15">
+                            <!-- Loading -->
+                            <Border IsVisible="{Binding IsLoading}" BackgroundColor="#667eea" StrokeThickness="0" StrokeShape="RoundRectangle 12" Padding="0,15">
                                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
-                                    <ActivityIndicator Grid.Column="0"
-                                                      IsRunning="True"
-                                                      Color="White"
-                                                      WidthRequest="24"
-                                                      HeightRequest="24"
-                                                      HorizontalOptions="End"/>
-                                    <Label Grid.Column="1"
-                                           Text="Signing in..."
-                                           FontSize="16"
-                                           FontAttributes="Bold"
-                                           TextColor="White"
-                                           VerticalOptions="Center"
-                                           HorizontalOptions="Start"/>
+                                    <ActivityIndicator Grid.Column="0" IsRunning="True" Color="White" WidthRequest="24" HeightRequest="24"/>
+                                    <Label Grid.Column="1" Text="Signing in..." FontSize="16" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
                                 </Grid>
                             </Border>
 
                             <!-- Footer -->
                             <StackLayout Spacing="10" Margin="0,15,0,0">
-                                <Label HorizontalTextAlignment="Center"
-                                       FontSize="13"
-                                       TextColor="{DynamicResource SecondaryTextColor}">
+                                <Label HorizontalTextAlignment="Center" FontSize="13" TextColor="{DynamicResource SecondaryTextColor}">
                                     <Label.FormattedText>
                                         <FormattedString>
                                             <Span Text="Don't have an account? "/>
-                                            <Span Text="Contact Admin" 
-                                                  TextColor="#667eea"
-                                                  FontAttributes="Bold"
-                                                  TextDecorations="Underline"/>
+                                            <Span Text="Contact Admin" TextColor="#667eea" FontAttributes="Bold" TextDecorations="Underline"/>
                                         </FormattedString>
                                     </Label.FormattedText>
                                     <Label.GestureRecognizers>
@@ -239,21 +180,15 @@
                                     </Label.GestureRecognizers>
                                 </Label>
 
-                                <!-- Version Info -->
-                                <Label Text="Version 1.0.0" 
-                                       FontSize="11" 
-                                       TextColor="{DynamicResource TertiaryTextColor}"
-                                       HorizontalTextAlignment="Center"
-                                       Opacity="0.6"/>
+                                <Label Text="Version 1.0.0" FontSize="11" TextColor="{DynamicResource TertiaryTextColor}" HorizontalTextAlignment="Center" Opacity="0.6"/>
                             </StackLayout>
-
                         </StackLayout>
                     </Grid>
                 </Border>
             </Grid>
         </ScrollView>
 
-        <!-- Theme Toggle (Top Right) -->
+        <!-- Theme Toggle -->
         <Button Text="{Binding ThemeIcon}"
                 FontSize="24"
                 BackgroundColor="#FFFFFF30"
@@ -268,5 +203,22 @@
                 Margin="20"
                 Command="{Binding ToggleThemeCommand}"/>
 
+        <!-- API Status Indicator (Android only) -->
+        <Frame WidthRequest="14" HeightRequest="14"
+               CornerRadius="7"
+               BackgroundColor="{Binding ApiStatusColor}"
+               BorderColor="#FFFFFF40"
+               HasShadow="False"
+               HorizontalOptions="Start"
+               VerticalOptions="Start"
+               Margin="25,25,0,0"
+               IsVisible="{Binding IsAndroid}">
+            <Label Text="{Binding ApiStatus}"
+                   FontSize="10"
+                   TextColor="White"
+                   Margin="18,0,0,0"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start"/>
+        </Frame>
     </Grid>
 </ContentPage>
