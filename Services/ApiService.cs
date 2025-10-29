@@ -690,7 +690,7 @@ namespace Cashere.Services
             }
         }
 
-        public async Task<bool> DeleteUserAsync(int id)
+        public async Task<DeleteUserResult> DeleteUserAsync(int id)
         {
             try
             {
@@ -699,7 +699,15 @@ namespace Cashere.Services
 
                 var response = await _httpClient.DeleteAsync($"{_baseUrl}/admin/UserManagement/users/{id}");
 
-                return response.IsSuccessStatusCode;
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<DeleteUserResult>(content, _jsonOptions)
+                           ?? new DeleteUserResult { Success = true, Message = "User deleted successfully" };
+                }
+
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new Exception($"Failed to delete user: {errorContent}");
             }
             catch (Exception ex)
             {
@@ -918,5 +926,12 @@ namespace Cashere.Services
         public string Role { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
+    }
+    public class DeleteUserResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        public bool IsSoftDelete { get; set; }
+        public bool IsHardDelete { get; set; }
     }
 }

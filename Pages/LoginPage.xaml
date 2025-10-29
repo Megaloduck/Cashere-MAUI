@@ -15,6 +15,32 @@
             </BoxView.Background>
         </BoxView>
 
+        <Border StrokeThickness="0"
+                StrokeShape="RoundRectangle 10"
+                BackgroundColor="{DynamicResource CardBackgroundColor}"
+                VerticalOptions="Start"
+                HorizontalOptions="Start"
+                Margin="15,15,0,0"
+                Padding="0"
+                ZIndex="10">
+
+            <Grid ColumnDefinitions="Auto,*" Padding="10">
+                <Label Grid.Column="0" Text="{Binding ApiStatusText}"
+                       TextColor="{Binding ApiStatusColor}"
+                       FontSize="12"
+                       VerticalOptions="Center" />
+
+                <Button Grid.Column="1"
+                        Text="↻"
+                        FontSize="14"
+                        TextColor="{DynamicResource PrimaryTextColor}"
+                        BackgroundColor="{DynamicResource HeaderBackgroundColor}"
+                        Command="{Binding RefreshApiStatusCommand}"
+                        IsVisible="{Binding IsRefreshVisible}" />
+            </Grid>
+        </Border>
+        
+
 
         <!-- Main Content -->
         <ScrollView VerticalOptions="Center" HorizontalOptions="Center">

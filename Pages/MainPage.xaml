@@ -169,44 +169,72 @@
                 </Grid>
             </Border>
 
-            <!-- 🧭Category Tabs -->
+            <!-- 🧭 Category Tabs -->
             <ScrollView Grid.Row="1"
-                Orientation="Horizontal"
-                HorizontalScrollBarVisibility="Never">
+            Orientation="Horizontal"
+            HorizontalScrollBarVisibility="Never">
 
-                <HorizontalStackLayout >
-                    <CollectionView ItemsSource="{Binding Categories}"
-                            SelectionMode="Single"
-                            SelectionChangedCommand="{Binding SelectCategoryCommand}"
-                            SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
-                        <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Horizontal"
-                                       ItemSpacing="12" />
-                        </CollectionView.ItemsLayout>
+                <CollectionView ItemsSource="{Binding Categories}"
+                    SelectionMode="Single"
+                    SelectedItem="{Binding SelectedCategory}"
+                    SelectionChangedCommand="{Binding SelectCategoryCommand}"
+                    SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal"
+                               ItemSpacing="12" />
+                    </CollectionView.ItemsLayout>
 
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Border StrokeThickness="0"
-                                BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Dynamic:PrimaryColor|Dynamic:CardBackgroundColor'}"
-                                StrokeShape="RoundRectangle 12"
-                                Padding="10">
-                                    <Border.Shadow>
-                                        <Shadow Brush="{DynamicResource ShadowColor}"
-                                        Offset="0,2"
-                                        Radius="8"
-                                        Opacity="0.2" />
-                                    </Border.Shadow>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border StrokeThickness="0"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="10"
+                        BackgroundColor="{DynamicResource CardBackgroundColor}">
 
-                                    <Label Text="{Binding Name}"
-                                   FontSize="14"
-                                   FontAttributes="Bold"
-                                   TextColor="{DynamicResource PrimaryTextColor}" />
-                                </Border>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </HorizontalStackLayout>
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+
+                                        <!-- Normal (default) -->
+                                        <VisualState Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor"
+                                            Value="{DynamicResource CardBackgroundColor}" />
+                                                <Setter TargetName="CategoryLabel"
+                                            Property="Label.TextColor"
+                                            Value="{DynamicResource PrimaryTextColor}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+
+                                        <!-- ❌ PointerOver intentionally removed -->
+                                        <!-- (Do not define it to fully disable hover highlight) -->
+
+                                        <!-- Selected -->
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor"
+                                            Value="{DynamicResource PrimaryColor}" />
+                                                <Setter TargetName="CategoryLabel"
+                                            Property="Label.TextColor"
+                                            Value="{DynamicResource PrimaryTextColor}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+
+                                <Label x:Name="CategoryLabel"
+                           Text="{Binding Name}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource PrimaryTextColor}" />
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </ScrollView>
+
+
+
 
             <!-- 🍽️ Menu Items Grid -->
             <CollectionView Grid.Row="2"
